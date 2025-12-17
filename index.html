@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Cadastro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <link rel="stylesheet" href="css/cadastro-entrar.css">
+</head>
+<body>
+
+    <main class="layout-geral">
+
+        <!-- LADO ESQUERDO -->
+        <section class="lado-esquerdo">
+        </section>
+
+        <!-- LADO DIREITO -->
+        <section class="lado-direito">
+
+            <!-- LOGIN -->
+            <form method="post" action="login.php" class="box-form">
+                <h2>Login</h2>
+
+                <p id="erro-login"></p>
+
+                <label for="login-email">E-mail:</label>
+                <input type="email" id="login-email" name="email" required>
+
+                <label for="login-password">Senha:</label>
+                <input type="password" id="login-password" name="password" required>
+
+                <button type="submit">Entrar</button>
+
+                <!-- LINK PARA MOSTRAR O CADASTRO -->
+                <p class="texto-link">Não tem uma conta?
+                    <a href="#" id="mostrar-cadastro">Cadastrar agora</a>
+                </p>
+            </form>
+
+            <!-- CADASTRO -->
+            <form method="post" action="cadastro.php" class="box-form" id="form-cadastro">
+                <h2>Cadastre-se</h2>
+
+                <p id="erro-cadastro"></p>
+
+                <label for="nome">Nome:</label>
+                <input type="text" id="nome" name="nome" required>
+
+                <label for="sobrenome">Sobrenome:</label>
+                <input type="text" id="sobrenome" name="sobrenome">
+
+                <label for="email">Email:</label>
+                <input type="email" id="email" name="email" required>
+
+                <label for="senha">Senha:</label>
+                <input type="password" id="senha" name="senha" required>
+
+                <button type="submit">Cadastrar</button>
+
+                <!-- LINK PARA VOLTAR AO LOGIN -->
+                <p class="texto-link">Já possui conta?
+                    <a href="#" id="mostrar-login">Faça login aqui</a>
+                </p>
+            </form>
+
+        </section>
+
+    </main>
+
+    <!-- Script para pegar erro enviado pelo login.php -->
+<!-- CAPTURAR ERROS -->
+<script>
+    const params = new URLSearchParams(window.location.search);
+
+    const loginForm = document.querySelector('form[action="login.php"]');
+    const cadastroForm = document.getElementById('form-cadastro');
+
+    // --- Mostrar mensagens ---
+    if (params.has('erro-login')) {
+        document.getElementById('erro-login').textContent =
+            decodeURIComponent(params.get('erro-login'));
+    }
+
+    if (params.has('erro-cadastro')) {
+        document.getElementById('erro-cadastro').textContent =
+            decodeURIComponent(params.get('erro-cadastro'));
+    }
+
+    // --- Decidir qual form exibir ---
+    let show = params.get('show');
+
+    if (show === 'cadastro') {
+        loginForm.style.display = "none";
+        cadastroForm.style.display = "block";
+    } else {
+        // padrão: login
+        loginForm.style.display = "block";
+        cadastroForm.style.display = "none";
+    }
+
+    // --- Alternância manual ---
+    document.getElementById('mostrar-cadastro').onclick = (e) => {
+        e.preventDefault();
+        loginForm.style.display = "none";
+        cadastroForm.style.display = "block";
+    };
+
+    document.getElementById('mostrar-login').onclick = (e) => {
+        e.preventDefault();
+        cadastroForm.style.display = "none";
+        loginForm.style.display = "block";
+    };
+</script>
+
+
+</body>
+</html>

@@ -1,0 +1,119 @@
+/* ===== LAYOUT GERAL ===== */
+body {
+    margin: 0;
+    font-family: Arial, Helvetica, sans-serif;
+    background: #f0f0f5;
+}
+
+.layout-geral {
+    display: flex;
+    height: 100vh;
+}
+
+/* ===== LADO ESQUERDO ===== */
+.lado-esquerdo {
+    width: 50%;
+    padding: 60px;
+    color: #fff;
+    background: linear-gradient(135deg, #2a9df4, #1f7ed0, #0f5fb0);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.lado-esquerdo h1 {
+    font-size: 40px;
+    margin-bottom: 20px;
+}
+
+.lado-esquerdo p {
+    font-size: 16px;
+    max-width: 350px;
+    line-height: 1.5;
+}
+
+/* ===== LADO DIREITO ===== */
+.lado-direito {
+    width: 50%;
+    background: #ffffff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 0 50px;
+    gap: 40px;
+}
+
+/* ===== BOX DOS FORMULÁRIOS ===== */
+.box-form {
+    background: #fff;
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.1);
+}
+
+.box-form h2 {
+    margin-bottom: 20px;
+    color: #333;
+}
+
+/* ===== INPUTS ===== */
+.box-form label {
+    font-size: 14px;
+    color: #444;
+}
+
+.box-form input {
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0 15px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 15px;
+    outline: none;
+}
+
+.box-form input:focus {
+    border-color: #2a9df4;
+}
+
+/* ===== BOTÕES ===== */
+.box-form button {
+    width: 100%;
+    padding: 12px;
+    background: #2a9df4;
+    color: #fff;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.box-form button:hover {
+    background: #1f7ed0;
+}
+
+/* ===== MENSAGEM DE ERRO ===== */
+#erro-login,
+#erro-cadastro {
+    color: #d9534f;
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.texto-link {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 14px;
+    color: #555;
+}
+
+.texto-link a {
+    color: #2a9df4;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.texto-link a:hover {
+    text-decoration: underline;
+}

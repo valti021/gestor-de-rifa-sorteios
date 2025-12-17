@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestor de rifa</title>
+    <link rel="stylesheet" href="../css/reset.css" />
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/colors.css">
+    <link rel="stylesheet" href="../css/grade-rifas.css">
+    <link rel="stylesheet" href="../css/modal-criar-rifa.css">
+    <link rel="stylesheet" href="../css/css-footer.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Nunito&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+
+    <style>
+
+
+        /* Container da grade de rifas - Versão 1: Altura Fixa */
+        .lista-rifas {
+            display: grid !important;
+            grid-template-columns: repeat(auto-fill, minmax(20px, 1fr)) !important;
+            gap: 25px !important;
+            padding: 15px !important;
+            /* Versão 1: Altura Fixa */
+            max-height: 455px !important; 
+            overflow-y: auto !important; 
+            /* ---------------------------------------------------- */
+        }
+
+        /* Limitar a 4 colunas em telas grandes (mantém o controle responsivo) */
+        @media (min-width: 1200px) {
+            .lista-rifas {
+                grid-template-columns: repeat(4, 1fr) !important;
+            }
+        }
+
+
+
+    </style>
+</head>
+<body>
+
+    <nav class="navbar">
+        <ul>
+            <li><a href="../templates/index.html">Início</a></li>
+            <li><a href="../templates/resultado.html">Resultado</a></li>
+            <li><a href="../templates/reservados.html">Sortu</a></li>
+
+            <!-- Link exclusivo MASTER -->
+            <li id="link-master" hidden>
+                <a href="../templates/usuario-master.html">Master</a>
+            </li>
+
+            <li>
+                <a href="../templates/config.html">
+                    <i class="fas fa-cog icone-engrenagem"></i>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+
+    <header>
+        <div class="icone-conta">
+            <a href="#" id="abrir-modal-conta">
+                <i class="fa-solid fa-user"></i>
+            </a>
+        </div>
+        <h1>GESTOR DE RIFA</h1>
+    </header>
+
+    <div class="conteudo-principal">
+
+        <nav class="status-vendedor">
+            <ul>
+                <li data-status="ativa">Rifas Ativas: <span id="rifas-ativas">0</span></li>
+                <li data-status="adiada">Rifas Adiadas: <span id="rifas-adiadas">0</span></li>
+                <li data-status="cancelada">Canceladas: <span id="rifas-canceladas">0</span></li>
+                <li data-status="concluida">Concluídas: <span id="rifas-concluidas">0</span></li>
+            </ul>
+        </nav>
+
+        <section class="grade-rifas">
+            <div id="conteudo-rifas">
+
+            <h2 id="titulo-aba">
+                <span id="titulo-texto">Rifas Ativas</span>
+                <button id="btn-criar-rifa-icone" class="btn-icone">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+            </h2>
+
+
+
+                <div id="bloco-sem-rifas" class="sem-rifas" style="display:none;">
+                    <p id="mensagem-sem-rifas"></p>
+                    <button id="btn-criar-rifa" style="display:none;">Criar nova rifa</button>
+                </div>
+
+                <div class="lista-rifas" id="lista-rifas"></div>
+
+                <div id="carregar-mais" style="display:none; text-align:center; margin-top:10px;">
+                    <button id="btn-carregar-mais" style="
+                        background: none;
+                        border: none;
+                        color: #4CAF50;
+                        text-decoration: underline;
+                        cursor: pointer;
+                        padding: 0;
+                        font: inherit;
+                    ">Carregar mais</button>
+                </div>
+
+
+                <template id="template-card-rifa">
+                    <div class="rifa-card">
+                        <div class="nome-premio"></div>
+                        <img class="img-premio">
+                        <div class="valor-dezena"></div>
+                        <div class="quantidade-dezenas"></div>
+                        <div class="data-sorteio"></div>
+                        <a class="btn-gerenciar" href="#">Ver Detalhes/Gerenciar</a>
+                    </div>
+                </template>
+
+            </div>
+        </section>
+
+    </div>
+    <!-- Modal de Login/Cadastro ou Info do Usuário -->
+    <div id="modal-conta" class="modal" style="display: none;">
+        <div class="modal-content" id="modal-conteudo">
+            <h2>Minha Conta</h2>
+            <p><strong>Nome completo:</strong> João Silva</p>
+            <p><strong>Email:</strong> joao@email.com</p>
+            <button id="btn-logout" class="btn-sair">Sair</button>
+        </div>
+    </div>
+
+
+<footer>
+    <div class="footer-container">
+        <div class="footer-section">
+            <div class="footer-logo">
+                <i class="fas fa-ticket-alt"></i>
+                Gestor de Rifa
+            </div>
+            <p>Soluções profissionais para gerenciamento de rifas, sorteios e campanhas de arrecadação.</p>
+            <div class="social-links">
+                <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                <a href="#" aria-label="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Links Rápidos</h3>
+            <ul class="footer-links">
+                <li><a href="#"><i class="fas fa-chevron-right"></i> Página Inicial</a></li>
+                <li><a href="#"><i class="fas fa-chevron-right"></i> Sobre Nós</a></li>
+                <li><a href="#"><i class="fas fa-chevron-right"></i> Como Funciona</a></li>
+                <li><a href="#"><i class="fas fa-chevron-right"></i> Planos</a></li>
+                <li><a href="#"><i class="fas fa-chevron-right"></i> Contato</a></li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Contato</h3>
+            <ul class="contact-info">
+                <li>
+                    <i class="fas fa-map-marker-alt"></i>
+                    <span>Av. Paulista, 1000 - São Paulo, SP</span>
+                </li>
+                <li>
+                    <i class="fas fa-phone"></i>
+                    <span>(11) 99999-9999</span>
+                </li>
+                <li>
+                    <i class="fas fa-envelope"></i>
+                    <span>contato@gestorderifa.com.br</span>
+                </li>
+            </ul>
+        </div>
+        
+        <div class="footer-section">
+            <h3>Newsletter</h3>
+            <p>Receba novidades e promoções exclusivas.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Seu e-mail" required>
+                <button type="submit"><i class="fas fa-paper-plane"></i></button>
+            </form>
+        </div>
+    </div>
+    
+    <div class="footer-bottom">
+        <p>&copy; 2023 Gestor de Rifa. Todos os direitos reservados.</p>
+        <p>
+            <a href="#" class="footer-link">Política de Privacidade</a> | 
+            <a href="#" class="footer-link">Termos de Uso</a>
+        </p>
+    </div>
+</footer>
+    <script src="../js/navbar.js"></script>
+    <script src="../js/modal-conta.js"></script>
+    <script src="../js/rifas-lista.js"></script>
+    <script src="../js/modal-criar-rifa.js"></script>
+    <script src="../js/teste-rapido.js"></script>
+
+    
+
+
+
+</body>
+</html>

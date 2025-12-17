@@ -1,0 +1,16 @@
+:root {
+  --cor-branco: #ffffff;
+  --verde-escuro: #388E3C;
+  --verde-principal: #4CAF50;
+  --verde-claro: #81C784;
+  --verde-navbar: rgb(0, 173, 14);
+  --verde-engrenagem: #009b27;
+  --verde-engrenagem-hover: #007a20;
+  --verde-engrenagem-active: #006619;
+  --verde-engrenagem-destaque: #00c832;
+  --cinza-titulo: #2c3e50;
+  --verde-footer: #13a700;
+  --sombra-profunda: rgba(0, 0, 0, 0.61);
+  --sombra-suave: rgba(0, 0, 0, 0.1);
+  --cor-vermelho: #ff0000;
+}

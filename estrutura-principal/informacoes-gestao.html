@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informações & Gestão - Nome da rifa</title>
+</head>
+<body>
+  
+    <h1>ok deu certo, sem problemas com o link!</h1>
+
+    
+    <script>
+        // Pega a URL e lê o parâmetro
+        const params = new URLSearchParams(window.location.search);
+        const nomeRifa = params.get("informacoes_gestao");
+
+        if (nomeRifa) {
+            document.title = "Informações & Gestão - " + nomeRifa;
+        }
+    </script>
+
+</body>
+</html>
