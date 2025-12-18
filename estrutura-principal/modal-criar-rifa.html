@@ -56,39 +56,60 @@
             </select>
 
             <div class="data-sorteio-container">
-                <label>Data do sorteio:</label>
+                <label>Data e Horário do sorteio:</label>
 
+                <!-- PASSO 1: Seleção dos filtros (dia da semana, mês, ano, horário) -->
                 <div class="select-group">
-                    <select id="dia_semana" name="dia_semana" required>
-                        <option value="">Selecione o dia da semana</option>
-                    </select>
+                    <label style="font-size: 12px; color: #666; margin-bottom: 10px; display: block;">Selecione os filtros:</label>
+                    <div class="filtros-row">
+                        <div class="filtro-column">
+                            <label for="dia_semana" style="font-size: 13px;">Dia da semana:</label>
+                            <select id="dia_semana" name="dia_semana" required>
+                                <option value="">Selecione</option>
+                            </select>
+                        </div>
 
-                    <select id="mes" name="mes" required>
-                        <option value="">Selecione o mês</option>
-                    </select>
+                        <div class="filtro-column">
+                            <label for="mes" style="font-size: 13px;">Mês:</label>
+                            <select id="mes" name="mes" required>
+                                <option value="">Selecione</option>
+                            </select>
+                        </div>
 
-                    <select id="ano" name="ano" required>
-                        <option value="">Selecione o ano</option>
-                    </select>
+                        <div class="filtro-column">
+                            <label for="ano" style="font-size: 13px;">Ano:</label>
+                            <select id="ano" name="ano" required>
+                                <option value="">Selecione</option>
+                            </select>
+                        </div>
 
-                    <select id="horario" name="horario" required>
-                        <option value="">Selecione o horário</option>
-                    </select>
+                        <div class="filtro-column">
+                            <label for="horario" style="font-size: 13px;">Horário:</label>
+                            <select id="horario" name="horario" required>
+                                <option value="">Selecione</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- SELECT da data final (agora correto) -->
-                <div class="data-final">
-                    <label for="data_sorteio">Datas disponíveis:</label>
+                <!-- PASSO 2: Data e horário final selecionados -->
+                <div class="data-final-combined">
+                    <label style="font-size: 12px; color: #666; margin-bottom: 10px; display: block;">Data e horário exatos:</label>
+                    <div class="data-horario-row">
+                        <div class="data-column">
+                            <label for="data_sorteio">Data:</label>
+                            <select id="data_sorteio" name="data_sorteio" required disabled>
+                                <option value="">Selecione a data</option>
+                            </select>
+                        </div>
 
-                    <select id="data_sorteio" name="data_sorteio" required>
-                        <option value="">Selecione a data do sorteio</option>
-                    </select>
-                </div>
-
-                <!-- Área opcional para mensagens futuras -->
-                <div class="datas-sabados" id="datas_lista" style="display: none;">
-                    <h4 id="titulo_datas"></h4>
-                    <div id="lista_datas"></div>
+                        <div class="horario-column">
+                            <label for="horario_sorteio">Horário:</label>
+                            <select id="horario_sorteio" name="horario_sorteio" required disabled>
+                                <option value="">Selecione o horário</option>
+                            </select>
+                        </div>
+                    </div>
                 </div>
             </div>
 

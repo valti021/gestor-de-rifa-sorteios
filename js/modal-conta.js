@@ -94,15 +94,26 @@ document.addEventListener("DOMContentLoaded", () => {
                 } else {
                     // Mostra template de logado
                     modalBody.innerHTML = document.getElementById("template-logado").innerHTML;
-                    
+
+                    // Combina nome e sobrenome
+                    const nomeCompleto = `${usuario.nome} ${usuario.sobrenome}`.trim();
+
                     // Preenche os dados do usuário
-                    document.getElementById("user-nome").textContent = usuario.nome;
+                    document.getElementById("user-nome-completo").textContent = nomeCompleto;
                     document.getElementById("user-email").textContent = usuario.email;
-                    
-                    // Configura o botão de logout
+
+                    // Imagem de perfil
+                    const img = document.getElementById("user-imagem");
+                    if (usuario.imagem_perfil) {
+                        img.src = usuario.imagem_perfil;
+                    }
+                    img.alt = `Foto de ${nomeCompleto}`;
+
+                    // Botão logout
                     document.getElementById("btn-logout").addEventListener("click", () => {
                         window.location.href = "../php/logout.php";
                     });
+
                 }
             })
             .catch(err => {

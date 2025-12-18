@@ -314,6 +314,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         'valor_premio',
                         'tipo_sorteio',
                         'data_sorteio',
+                        'horario_sorteio',
                         'visibilidade',
                         'modelo_pagamento'
                     ];
@@ -501,10 +502,11 @@ document.addEventListener("DOMContentLoaded", () => {
                     
                     // Verificar o tipo de resposta
                     if (data.tipo === 'sucesso') {
-                        // Sucesso - redirecionar
+                        // Sucesso - redirecionar e recarregar
                         mostrarSucesso(data.mensagem || 'Rifa criada com sucesso!');
                         setTimeout(() => {
-                            window.location.href = data.redirect;
+                            // Redirecionar para main.html e recarregar
+                            window.location.href = 'main.html?reload=' + Date.now();
                         }, 1500);
                     } 
                     else if (data.tipo === 'validacao') {
@@ -751,8 +753,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const selectAno = document.getElementById('ano');
         const selectHorario = document.getElementById('horario');
         const selectDataFinal = document.getElementById('data_sorteio');
+        const selectHorarioFinal = document.getElementById('horario_sorteio');
         
-        if (!selectDia || !selectMes || !selectAno || !selectHorario || !selectDataFinal) {
+        if (!selectDia || !selectMes || !selectAno || !selectHorario || !selectDataFinal || !selectHorarioFinal) {
             console.warn('⚠️ Elementos do modal ainda não estão disponíveis no DOM. Tentando novamente...');
             setTimeout(() => carregarAgendaRifa(), 100); // Tenta novamente em 100ms
             return;
@@ -865,12 +868,20 @@ document.addEventListener("DOMContentLoaded", () => {
                 // Gerar datas reais
                 // ==========================
                 function gerarDatasReais() {
-                    resetSelect(selectDataFinal, 'Selecione a data do sorteio');
+                    resetSelect(selectDataFinal, 'Selecione a data');
+                    resetSelect(selectHorarioFinal, 'Selecione o horário');
+                    
                     const diaSemana = parseInt(selectDia.value);
                     const mes = selectMes.value;
                     const ano = parseInt(selectAno.value);
+                    const horarioSelecionado = selectHorario.value;
                     
-                    if (isNaN(diaSemana) || !mes || isNaN(ano)) return;
+                    if (isNaN(diaSemana) || !mes || isNaN(ano) || !horarioSelecionado) {
+                        // Desabilitar os selects se não houver seleção completa
+                        selectDataFinal.disabled = true;
+                        selectHorarioFinal.disabled = true;
+                        return;
+                    }
                     
                     const mesNumero = converterMesParaNumero(mes);
                     const datas = [];
@@ -895,7 +906,26 @@ document.addEventListener("DOMContentLoaded", () => {
                         selectDataFinal.appendChild(option);
                     });
                     
+                    // Preencher horários disponíveis
+                    const horariosDisponiveis = [...new Set(agenda.map(item => item.horario))].sort();
+                    horariosDisponiveis.forEach(h => {
+                        const option = document.createElement('option');
+                        option.value = h;
+                        option.textContent = h;
+                        selectHorarioFinal.appendChild(option);
+                    });
+                    
+                    // Se o horário anterior foi selecionado, manter selecionado
+                    if (horarioSelecionado) {
+                        selectHorarioFinal.value = horarioSelecionado;
+                    }
+                    
+                    // HABILITAR os selects agora que temos dados
+                    selectDataFinal.disabled = false;
+                    selectHorarioFinal.disabled = false;
+                    
                     console.log(`📅 Datas reais geradas: ${datas.length} datas para ${mes}/${ano}, dia da semana ${diaSemana}`);
+                    console.log(`⏰ Horários disponíveis: ${horariosDisponiveis.length} opções`);
                 }
                 
                 // ==========================
@@ -912,13 +942,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 selectDia.addEventListener('change', () => {
                     console.log('Dia alterado:', selectDia.value);
                     preencherHorarios();
-                    resetSelect(selectDataFinal, 'Selecione a data do sorteio');
+                    resetSelect(selectDataFinal, 'Selecione a data');
+                    resetSelect(selectHorarioFinal, 'Selecione o horário');
+                    selectDataFinal.disabled = true;
+                    selectHorarioFinal.disabled = true;
                 });
                 
                 selectMes.addEventListener('change', () => {
                     console.log('Mês alterado:', selectMes.value);
                     preencherHorarios();
-                    resetSelect(selectDataFinal, 'Selecione a data do sorteio');
+                    resetSelect(selectDataFinal, 'Selecione a data');
+                    resetSelect(selectHorarioFinal, 'Selecione o horário');
+                    selectDataFinal.disabled = true;
+                    selectHorarioFinal.disabled = true;
                 });
                 
                 selectAno.addEventListener('change', () => {

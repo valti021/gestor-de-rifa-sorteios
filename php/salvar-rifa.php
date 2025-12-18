@@ -4,35 +4,28 @@ session_start();
 
 header("Content-Type: application/json; charset=UTF-8");
 
-// Bloqueia requisições que não forem POST
+// Apenas POST
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
     http_response_code(405);
-    echo json_encode([
-        "tipo" => "erro_geral",
-        "mensagem" => "Método inválido."
-    ]);
+    echo json_encode(["tipo" => "erro_geral", "mensagem" => "Método inválido."]);
     exit;
 }
 
-// Verificar se o usuário está logado
-if (!isset($_SESSION["email"]) || !isset($_SESSION["usuario"])) {
+// Autenticação
+if (!isset($_SESSION["email"], $_SESSION["usuario"])) {
     http_response_code(401);
-    echo json_encode([
-        "tipo" => "erro_geral",
-        "mensagem" => "Usuário não autenticado."
-    ]);
+    echo json_encode(["tipo" => "erro_geral", "mensagem" => "Usuário não autenticado."]);
     exit;
 }
 
-$email = $_SESSION["email"];
+$email       = $_SESSION["email"];
 $organizador = $_SESSION["usuario"];
-$erros = [];
+$erros       = [];
 
-// -----------------------------
-// VERIFICAÇÃO DOS DADOS DO FORMULÁRIO
-// -----------------------------
+/* ===============================
+   VALIDAÇÃO DOS CAMPOS
+================================ */
 
-// Campos obrigatórios
 $camposObrigatorios = [
     'tipo_quantidade_dezenas',
     'valor_dezena',
@@ -40,6 +33,8 @@ $camposObrigatorios = [
     'valor_premio',
     'tipo_sorteio',
     'data_sorteio',
+    'horario_sorteio',
+    'dia_semana',
     'visibilidade',
     'modelo_pagamento'
 ];
@@ -50,147 +45,144 @@ foreach ($camposObrigatorios as $campo) {
     }
 }
 
-// Verificação da imagem
+// Imagem
 if (!isset($_FILES["imagem"]) || $_FILES["imagem"]["error"] !== UPLOAD_ERR_OK) {
     $erros[] = "imagem";
-} else {
-    $imagem = $_FILES["imagem"];
-    
-    // Extensões permitidas
-    $extensoesPermitidas = ["jpg", "jpeg", "png"];
-    $extensao = strtolower(pathinfo($imagem["name"], PATHINFO_EXTENSION));
-    
-    if (!in_array($extensao, $extensoesPermitidas)) {
-        $erros[] = "imagem";
-    }
-    
-    // Limite → 1.5 MB
-    $tamanhoMaximo = 1.5 * 1024 * 1024;
-    
-    if ($imagem["size"] > $tamanhoMaximo) {
-        $erros[] = "imagem";
-    }
 }
 
-// Validação de tipos de dados
-if (isset($_POST["valor_dezena"]) && $_POST["valor_dezena"] <= 0) {
-    if (!in_array('valor_dezena', $erros)) {
-        $erros[] = 'valor_dezena';
-    }
-}
-
-if (isset($_POST["valor_premio"]) && $_POST["valor_premio"] <= 0) {
-    if (!in_array('valor_premio', $erros)) {
-        $erros[] = 'valor_premio';
-    }
-}
-
-// Validação da data (não pode ser no passado)
-if (isset($_POST["data_sorteio"]) && !in_array('data_sorteio', $erros)) {
-    $dataSorteio = DateTime::createFromFormat(
-        'Y-m-d',
-        $_POST["data_sorteio"],
-        new DateTimeZone('America/Sao_Paulo')
-    );
-
-    $hoje = new DateTime('today', new DateTimeZone('America/Sao_Paulo'));
-
-    
-    if ($dataSorteio < $hoje) {
-        $erros[] = "data_sorteio";
-    }
-}
-
-// Se houver erros, retorna eles
+// Se erro → retorna JSON
 if (!empty($erros)) {
     http_response_code(400);
     echo json_encode([
-        "tipo" => "validacao",
+        "tipo"  => "validacao",
         "erros" => array_unique($erros)
     ]);
     exit;
 }
 
-// -----------------------------
-// PROCESSAMENTO DOS DADOS
-// -----------------------------
+/* ===============================
+   PROCESSAMENTO
+================================ */
+
 try {
-    $tipo_dezenas   = $_POST["tipo_quantidade_dezenas"];
-    $valor_dezena   = (float)$_POST["valor_dezena"];
-    $nome_premio    = trim($_POST["nome_premio"]);
-    $descricao      = trim($_POST["descricao"] ?? '');
-    $valor_premio   = (float)$_POST["valor_premio"];
-    $tipo_sorteio   = $_POST["tipo_sorteio"];
-    $data_sorteio   = $_POST["data_sorteio"];
-    $visibilidade   = $_POST["visibilidade"];
-    $modelo_pagamento = $_POST["modelo_pagamento"];
-    $chave_pix      = trim($_POST["chave_pix"] ?? '');
-    $lucro_final    = $_POST["lucro_final"] ?? null;
+    $tipo_dezenas = $_POST["tipo_quantidade_dezenas"];
+    $valor_dezena = (float) $_POST["valor_dezena"];
+    $nome_premio  = trim($_POST["nome_premio"]);
+    $descricao    = trim($_POST["descricao"] ?? '');
+    $valor_premio = (float) $_POST["valor_premio"];
+    $tipo_sorteio = $_POST["tipo_sorteio"];
 
-    $status = "ativa";
+    // 🔹 DATA, HORA E DIA DA SEMANA
+    $data_input   = $_POST["data_sorteio"];    // YYYY-MM-DD
+    $hora_input   = $_POST["horario_sorteio"]; // HH:mm
+    $dia_semana   = $_POST["dia_semana"];      // texto ou número
 
-    // Pasta personalizada
-    $nomeFormatado = strtolower(trim($nome_premio));
-    $nomeFormatado = preg_replace('/\s+/', '-', $nomeFormatado);
-    $nomeFormatado = preg_replace('/[^a-zA-Z0-9_-]/', '', $nomeFormatado);
+    // Junta e valida
+    $dataHoraStr = "{$data_input} {$hora_input}:00";
 
-    $dataFormatada = str_replace("-", "", $data_sorteio);
-    $pastaImg = "../uploads/rifas/{$nomeFormatado}-{$dataFormatada}/";
+    $dataHora = DateTime::createFromFormat(
+        'Y-m-d H:i:s',
+        $dataHoraStr,
+        new DateTimeZone('America/Sao_Paulo')
+    );
 
+    if (!$dataHora) {
+        throw new Exception("Data ou horário inválidos.");
+    }
+
+    // Formato FINAL para o banco
+    $data_sorteio = $dataHora->format('Y-m-d H:i:s');
+
+    $visibilidade      = $_POST["visibilidade"];
+    $modelo_pagamento  = $_POST["modelo_pagamento"];
+    $chave_pix         = trim($_POST["chave_pix"] ?? '');
+    $lucro_final       = $_POST["lucro_final"] ?? null;
+    $status            = "ativa";
+
+    /* ===============================
+       IMAGEM
+    ================================ */
+
+    $imagem = $_FILES["imagem"];
+    $ext    = strtolower(pathinfo($imagem["name"], PATHINFO_EXTENSION));
+
+    $nomeFormatado = preg_replace('/[^a-z0-9_-]/i', '',
+        str_replace(' ', '-', strtolower($nome_premio))
+    );
+
+    $pastaImg = "../uploads/rifas/{$nomeFormatado}/";
     if (!is_dir($pastaImg)) {
         mkdir($pastaImg, 0777, true);
     }
 
-    $novoNome = uniqid("premio_", true) . "." . $extensao;
-    $caminhoFinal = $pastaImg . $novoNome;
+    $novoNome   = uniqid("premio_", true) . "." . $ext;
+    $caminhoFS  = $pastaImg . $novoNome;
+    $caminhoBD  = "uploads/rifas/{$nomeFormatado}/{$novoNome}";
 
-    if (!move_uploaded_file($imagem["tmp_name"], $caminhoFinal)) {
-        throw new Exception("Falha ao salvar a imagem no servidor.");
+    if (!move_uploaded_file($imagem["tmp_name"], $caminhoFS)) {
+        throw new Exception("Erro ao salvar imagem.");
     }
 
-    $caminhoBD = "uploads/rifas/{$nomeFormatado}-{$dataFormatada}/{$novoNome}";
+    /* ===============================
+       BANCO DE DADOS
+    ================================ */
 
-    // Salvar no banco
     $sql = "INSERT INTO rifas (
-        email, organizador, status, tipo_quantidade_dezenas, valor_dezena, nome_premio,
-        descricao, valor_premio, tipo_sorteio, data_sorteio, imagem_premio,
-        visibilidade, modelo_pagamento, chave_pix, lucro_final
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        email,
+        organizador,
+        status,
+        tipo_quantidade_dezenas,
+        valor_dezena,
+        nome_premio,
+        descricao,
+        valor_premio,
+        tipo_sorteio,
+        data_sorteio,
+        dia_semana_sorteio,
+        imagem_premio,
+        visibilidade,
+        modelo_pagamento,
+        chave_pix,
+        lucro_final
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
-    if (!$stmt) {
-        throw new Exception("Erro ao preparar a consulta: " . $conn->error);
-    }
 
     $stmt->bind_param(
-        "ssssissssssssss",
-        $email, $organizador, $status, $tipo_dezenas, $valor_dezena, $nome_premio,
-        $descricao, $valor_premio, $tipo_sorteio, $data_sorteio,
-        $caminhoBD, $visibilidade, $modelo_pagamento, $chave_pix, $lucro_final
+        "ssssisssssssssss",
+        $email,
+        $organizador,
+        $status,
+        $tipo_dezenas,
+        $valor_dezena,
+        $nome_premio,
+        $descricao,
+        $valor_premio,
+        $tipo_sorteio,
+        $data_sorteio,
+        $dia_semana,
+        $caminhoBD,
+        $visibilidade,
+        $modelo_pagamento,
+        $chave_pix,
+        $lucro_final
     );
 
-    if (!$stmt->execute()) {
-        throw new Exception("Erro ao salvar no banco de dados: " . $stmt->error);
-    }
-
+    $stmt->execute();
     $stmt->close();
-    
-    // Sucesso!
+
     echo json_encode([
-        "tipo" => "sucesso",
-        "sucesso" => true,
-        "mensagem" => "Rifa criada com sucesso!",
-        "redirect" => "../estrutura-principal/main.html?inicio=1"
+        "tipo"    => "sucesso",
+        "mensagem"=> "Rifa criada com sucesso!",
+        "redirect" => "main.html"
     ]);
 
 } catch (Exception $e) {
-    error_log("Erro ao criar rifa: " . $e->getMessage());
     http_response_code(500);
     echo json_encode([
-        "tipo" => "erro_geral",
-        "mensagem" => "Erro interno no servidor. Por favor, tente novamente."
+        "tipo"     => "erro_geral",
+        "mensagem" => $e->getMessage()
     ]);
 }
 
 $conn->close();
-?>

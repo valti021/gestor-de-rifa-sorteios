@@ -40,8 +40,7 @@ while ($r = $result->fetch_assoc()) {
 
     // Converte data para padrão BR (Brasília)
     if (!empty($r['data_sorteio'])) {
-        $data = new DateTime($r['data_sorteio'], new DateTimeZone('UTC'));
-        $data->setTimezone(new DateTimeZone('America/Sao_Paulo'));
+        $data = new DateTime($r['data_sorteio'], new DateTimeZone('America/Sao_Paulo'));
         $r['data_sorteio'] = $data->format('d/m/Y');
     }
 
