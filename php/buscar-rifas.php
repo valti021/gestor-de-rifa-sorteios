@@ -46,12 +46,12 @@ while ($r = $result->fetch_assoc()) {
     }
 
     $caminho = $r['imagem_premio'];
-    $caminhoCompleto = $_SERVER['DOCUMENT_ROOT'] . "/gestor-de-rifa/" . $caminho;
+    $caminhoCompleto = $_SERVER['DOCUMENT_ROOT'] . "/site-um/gestor-de-rifa/" . $caminho;
 
     if (!file_exists($caminhoCompleto) || empty($caminho)) {
-        $r['imagem_premio'] = "http://localhost/gestor-de-rifa/midia/erro-imagem/img-quebrada.png";
+        $r['imagem_premio'] = "http://localhost/site-um/gestor-de-rifa/midia/erro-imagem/img-quebrada.png";
     } else {
-        $r['imagem_premio'] = "http://localhost/gestor-de-rifa/" . $caminho;
+        $r['imagem_premio'] = "http://localhost/site-um/gestor-de-rifa/" . $caminho;
     }
 
     $rifas[] = $r;

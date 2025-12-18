@@ -12,6 +12,8 @@
     <link rel="stylesheet" href="../css/css-footer.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins&family=Nunito&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="stylesheet" href="../css/modal-conta.css">
+
 
     <style>
 
@@ -95,7 +97,6 @@
 
                 <div id="bloco-sem-rifas" class="sem-rifas" style="display:none;">
                     <p id="mensagem-sem-rifas"></p>
-                    <button id="btn-criar-rifa" style="display:none;">Criar nova rifa</button>
                 </div>
 
                 <div class="lista-rifas" id="lista-rifas"></div>
@@ -128,15 +129,9 @@
         </section>
 
     </div>
-    <!-- Modal de Login/Cadastro ou Info do Usuário -->
-    <div id="modal-conta" class="modal" style="display: none;">
-        <div class="modal-content" id="modal-conteudo">
-            <h2>Minha Conta</h2>
-            <p><strong>Nome completo:</strong> João Silva</p>
-            <p><strong>Email:</strong> joao@email.com</p>
-            <button id="btn-logout" class="btn-sair">Sair</button>
-        </div>
-    </div>
+
+    <div class="modal-conta" id="container-modal-conta"></div>
+
 
 
 <footer>
@@ -206,7 +201,7 @@
     <script src="../js/modal-conta.js"></script>
     <script src="../js/rifas-lista.js"></script>
     <script src="../js/modal-criar-rifa.js"></script>
-    <script src="../js/teste-rapido.js"></script>
+
 
     
 
