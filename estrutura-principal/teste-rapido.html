@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <!-- Adicionar o CSS do Cropper.js -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+</head>
+<body>
+    
+    <input type="file" id="uploadImage" accept="image/*">
+<div>
+  <img id="image" src="" alt="Imagem para recorte">
+</div>
+<button id="saveCrop">Salvar Recorte</button>
+
+
+
+    <!-- Adicionar o JS do Cropper.js -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+
+<script>
+    // Variáveis para armazenar a instância do cropper
+let cropper;
+
+// Função para carregar a imagem quando o usuário escolhe uma
+document.getElementById('uploadImage').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            const image = document.getElementById('image');
+            image.src = event.target.result;
+
+            // Destruir a instância anterior do cropper, se existir
+            if (cropper) {
+                cropper.destroy();
+            }
+
+            // Iniciar o cropper com a imagem carregada
+            cropper = new Cropper(image, {
+                aspectRatio: 1, // Define o aspecto da grade como quadrado (1:1)
+                viewMode: 1, // Define a visualização para recorte fixo
+                autoCropArea: 1, // Garante que o recorte ocupe a área toda
+                minContainerWidth: 180, // Define o tamanho mínimo da área de recorte
+                minContainerHeight: 180, // Define o tamanho mínimo da área de recorte
+                cropBoxResizable: true, // Permite que o usuário ajuste a área do recorte
+                ready: function () {
+                    console.log('Cropper pronto!');
+                }
+            });
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Função para salvar a imagem recortada
+document.getElementById('saveCrop').addEventListener('click', function() {
+    if (cropper) {
+        const canvas = cropper.getCroppedCanvas({
+            width: 1080, // Tamanho fixo do recorte
+            height: 1080
+        });
+        const croppedImage = canvas.toDataURL(); // Obtém a imagem recortada em base64
+
+        // Exemplo de como você pode usar a imagem recortada (enviar para um formulário, exibir, etc.)
+        console.log(croppedImage);
+        // Aqui, você pode setar a imagem no seu formulário, ou enviá-la ao servidor
+
+        // Exemplo de inserção da imagem recortada no formulário:
+        const input = document.createElement('input');
+        input.type = 'hidden';
+        input.name = 'imagem_recortada';
+        input.value = croppedImage; // Aqui você pode armazenar a imagem recortada em base64
+        document.querySelector('form').appendChild(input);
+    }
+});
+
+</script>
+</body>
+</html>

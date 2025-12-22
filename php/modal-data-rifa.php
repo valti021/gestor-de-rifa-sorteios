@@ -17,11 +17,14 @@ if (!file_exists(__DIR__ . '/conexao.php')) {
 
 require_once __DIR__ . '/conexao.php';
 
+// Conectar ao banco de sorteios
+$conn = conectarSorteios();
+
 // Verificar se $conn foi definido
 if (!isset($conn)) {
     echo json_encode([
         'success' => false,
-        'erro' => 'Variável $conn não definida no arquivo de conexão'
+        'erro' => 'Falha ao conectar ao banco de sorteios'
     ], JSON_UNESCAPED_UNICODE);
     exit();
 }

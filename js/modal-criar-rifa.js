@@ -178,6 +178,30 @@ document.addEventListener("DOMContentLoaded", () => {
                 });
             }
 
+            // ----- LÓGICA DE QUANTIDADE DE PRÊMIOS -----
+            // Mostrar ou esconder campo do 2º prêmio
+            const quantidadePremios = document.getElementById("quantidade_premios");
+            const campoPremiosDois = document.getElementById("campo-premio-dois");
+            const nomePremioUm = document.getElementById("nome_premio_um");
+            const nomePremiosDois = document.getElementById("nome_premio_dois");
+
+            if (quantidadePremios) {
+                quantidadePremios.addEventListener("change", function () {
+                    if (this.value === "2") {
+                        // Mostrar o 2º prêmio
+                        if (campoPremiosDois) campoPremiosDois.style.display = "block";
+                        if (nomePremiosDois) nomePremiosDois.setAttribute("required", "required");
+                    } else {
+                        // Ocultar o 2º prêmio
+                        if (campoPremiosDois) campoPremiosDois.style.display = "none";
+                        if (nomePremiosDois) {
+                            nomePremiosDois.removeAttribute("required");
+                            nomePremiosDois.value = "";
+                        }
+                    }
+                });
+            }
+
             // Configurar eventos para cálculo ao vivo
             const valorDezenaInput = document.getElementById("valor_dezena");
             const tipoQuantidadeInput = document.getElementById("tipo_quantidade_dezenas");
@@ -310,8 +334,9 @@ document.addEventListener("DOMContentLoaded", () => {
                     const camposObrigatorios = [
                         'tipo_quantidade_dezenas',
                         'valor_dezena',
-                        'nome_premio',
+                        'nome_premio_um',
                         'valor_premio',
+                        'quantidade_premios',
                         'tipo_sorteio',
                         'data_sorteio',
                         'horario_sorteio',
@@ -331,6 +356,17 @@ document.addEventListener("DOMContentLoaded", () => {
                             errosFront.push(`O campo "${label}" é obrigatório.`);
                         }
                     });
+
+                    // Validar nome do 2º prêmio se selecionado
+                    const quantidadePremiosInput = document.getElementById('quantidade_premios');
+                    if (quantidadePremiosInput && quantidadePremiosInput.value === '2') {
+                        const nomePremioDoissInput = document.getElementById('nome_premio_dois');
+                        if (nomePremioDoissInput && (nomePremioDoissInput.value === null || nomePremioDoissInput.value === '' || nomePremioDoissInput.value === undefined)) {
+                            nomePremioDoissInput.style.borderColor = '#d32f2f';
+                            nomePremioDoissInput.style.boxShadow = '0 0 0 2px rgba(211, 47, 47, 0.2)';
+                            errosFront.push('O campo "Nome do 2º prêmio" é obrigatório quando 2 prêmios são selecionados.');
+                        }
+                    }
 
                     // Validar imagem
                     if (!imagemInput || !imagemInput.files || imagemInput.files.length === 0) {

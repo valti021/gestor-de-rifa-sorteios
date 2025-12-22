@@ -1,4 +1,7 @@
 <?php
+// Garantir retorno JSON e suprimir warnings
+error_reporting(0);
+ini_set('display_errors', 0);
 session_start();
 header("Content-Type: application/json; charset=UTF-8");
 
@@ -7,8 +10,9 @@ if (!isset($_SESSION['email'])) {
     exit;
 }
 
-$conn = new mysqli("localhost", "root", "", "usuarios");
-$conn->set_charset("utf8");
+require_once __DIR__ . '/conexao.php';
+// Usar conexão correta para rifas
+$conn = conectarRifas();
 
 $email  = $_SESSION['email'];
 $status = $_GET['status'] ?? 'ativa';
@@ -18,7 +22,7 @@ $offset = isset($_GET['offset']) ? intval($_GET['offset']) : 0;
 
 $sql = "SELECT 
             id,
-            nome_premio,
+            nome_rifa,
             data_sorteio,
             tipo_quantidade_dezenas,
             valor_dezena,

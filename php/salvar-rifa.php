@@ -2,6 +2,9 @@
 require_once "conexao.php";
 session_start();
 
+// Conectar ao banco de rifas
+$conn = conectarRifas();
+
 header("Content-Type: application/json; charset=UTF-8");
 
 // Apenas POST
@@ -29,19 +32,28 @@ $erros       = [];
 $camposObrigatorios = [
     'tipo_quantidade_dezenas',
     'valor_dezena',
-    'nome_premio',
+    'nome_rifa',
     'valor_premio',
     'tipo_sorteio',
     'data_sorteio',
     'horario_sorteio',
     'dia_semana',
     'visibilidade',
-    'modelo_pagamento'
+    'modelo_pagamento',
+    'quantidade_premios',
+    'nome_premio_um'
 ];
 
 foreach ($camposObrigatorios as $campo) {
     if (empty($_POST[$campo])) {
         $erros[] = $campo;
+    }
+}
+
+// Validar nome do 2º prêmio se quantidade_premios = 2
+if (isset($_POST["quantidade_premios"]) && $_POST["quantidade_premios"] == "2") {
+    if (empty($_POST["nome_premio_dois"])) {
+        $erros[] = "nome_premio_dois";
     }
 }
 
@@ -67,12 +79,12 @@ if (!empty($erros)) {
 try {
     $tipo_dezenas = $_POST["tipo_quantidade_dezenas"];
     $valor_dezena = (float) $_POST["valor_dezena"];
-    $nome_premio  = trim($_POST["nome_premio"]);
+    $nome_rifa    = trim($_POST["nome_rifa"]);
     $descricao    = trim($_POST["descricao"] ?? '');
     $valor_premio = (float) $_POST["valor_premio"];
     $tipo_sorteio = $_POST["tipo_sorteio"];
 
-    // 🔹 DATA, HORA E DIA DA SEMANA
+    // DATA, HORA E DIA DA SEMANA
     $data_input   = $_POST["data_sorteio"];    // YYYY-MM-DD
     $hora_input   = $_POST["horario_sorteio"]; // HH:mm
     $dia_semana   = $_POST["dia_semana"];      // texto ou número
@@ -96,8 +108,13 @@ try {
     $visibilidade      = $_POST["visibilidade"];
     $modelo_pagamento  = $_POST["modelo_pagamento"];
     $chave_pix         = trim($_POST["chave_pix"] ?? '');
-    $lucro_final       = $_POST["lucro_final"] ?? null;
+    $lucro_final       = (float) ($_POST["lucro_final"] ?? 0);
     $status            = "ativa";
+
+    // Quantidade e nomes dos prêmios
+    $quantidade_premios = (int) $_POST["quantidade_premios"];
+    $nome_premio_um = trim($_POST["nome_premio_um"]);
+    $nome_premio_dois = ($quantidade_premios == 2) ? trim($_POST["nome_premio_dois"]) : null;
 
     /* ===============================
        IMAGEM
@@ -107,7 +124,7 @@ try {
     $ext    = strtolower(pathinfo($imagem["name"], PATHINFO_EXTENSION));
 
     $nomeFormatado = preg_replace('/[^a-z0-9_-]/i', '',
-        str_replace(' ', '-', strtolower($nome_premio))
+        str_replace(' ', '-', strtolower($nome_rifa))
     );
 
     $pastaImg = "../uploads/rifas/{$nomeFormatado}/";
@@ -133,7 +150,7 @@ try {
         status,
         tipo_quantidade_dezenas,
         valor_dezena,
-        nome_premio,
+        nome_rifa,
         descricao,
         valor_premio,
         tipo_sorteio,
@@ -143,19 +160,22 @@ try {
         visibilidade,
         modelo_pagamento,
         chave_pix,
-        lucro_final
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        lucro_final,
+        quantidade_premios,
+        nome_premio_um,
+        nome_premio_dois
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
 
     $stmt->bind_param(
-        "ssssisssssssssss",
+        "ssssisssssssssdsiss",
         $email,
         $organizador,
         $status,
         $tipo_dezenas,
         $valor_dezena,
-        $nome_premio,
+        $nome_rifa,
         $descricao,
         $valor_premio,
         $tipo_sorteio,
@@ -165,7 +185,10 @@ try {
         $visibilidade,
         $modelo_pagamento,
         $chave_pix,
-        $lucro_final
+        $lucro_final,
+        $quantidade_premios,
+        $nome_premio_um,
+        $nome_premio_dois
     );
 
     $stmt->execute();

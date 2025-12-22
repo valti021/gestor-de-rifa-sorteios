@@ -6,7 +6,8 @@ if (!isset($_SESSION['email'])) {
     exit;
 }
 
-$conn = new mysqli("localhost", "root", "", "usuarios");
+require_once "conexao.php";
+$conn = conectarRifas();
 
 $email = $_SESSION['email'];
 

@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Criar Rifa</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
+
 
 
 
@@ -26,38 +29,21 @@
         <form id="form-criar-rifa" enctype="multipart/form-data">
 
 
-
-            <!-- Tipo de dezenas -->
-            <label class="quantidade-dezenas" for="tipo_quantidade_dezenas">Quantidade de dezenas:</label>
-            <select id="tipo_quantidade_dezenas" name="tipo_quantidade_dezenas">
-                <option value="1000">000 - 999 (1000 números)</option>
-                <option value="100">00 - 99 (100 números)</option>
-                <option value="25">25 Grupos (25 números)</option>
-            </select>
-
-            <label class="valor-dezena" for="valor_dezena">Valor da dezena (R$):</label>
-            <input type="number" step="0.01" id="valor_dezena" name="valor_dezena" required>
-
-            <label for="nome_premio">Nome da Rifa:</label>
-            <input type="text" id="nome_premio" name="nome_premio" required>
-
+            <label for="nome_rifa">Nome da Rifa:</label>
+            <input type="text" id="nome_rifa" name="nome_rifa" required>
+            
             <label for="descricao">Descrição da Rifa:</label>
             <textarea id="descricao" name="descricao"></textarea>
-
-            <label for="valor_premio">Valor do prêmio (R$):</label>
-            <input type="number" step="0.01" id="valor_premio" name="valor_premio" required>
-
-            <!-- Tipo de sorteio -->
-            <label for="tipo_sorteio">Tipo de sorteio:</label>
-            <select name="tipo_sorteio" id="tipo_sorteio">
-                <option value="automatico" selected>Automático (programado)</option>
-                <option value="semi-federal">Semiautomático (Federal)</option>
-                <option value="beta">Beta (API não confiável)</option>
+            <!-- Visibilidade -->
+            <label for="visibilidade">Visibilidade:</label>
+            <select name="visibilidade" id="visibilidade">
+                <option value="publica" selected>Pública</option>
+                <option value="privada">Privada</option>
             </select>
-
+            
             <div class="data-sorteio-container">
                 <label>Data e Horário do sorteio:</label>
-
+                
                 <!-- PASSO 1: Seleção dos filtros (dia da semana, mês, ano, horário) -->
                 <div class="select-group">
                     <label style="font-size: 12px; color: #666; margin-bottom: 10px; display: block;">Selecione os filtros:</label>
@@ -68,21 +54,21 @@
                                 <option value="">Selecione</option>
                             </select>
                         </div>
-
+                        
                         <div class="filtro-column">
                             <label for="mes" style="font-size: 13px;">Mês:</label>
                             <select id="mes" name="mes" required>
                                 <option value="">Selecione</option>
                             </select>
                         </div>
-
+                        
                         <div class="filtro-column">
                             <label for="ano" style="font-size: 13px;">Ano:</label>
                             <select id="ano" name="ano" required>
                                 <option value="">Selecione</option>
                             </select>
                         </div>
-
+                        
                         <div class="filtro-column">
                             <label for="horario" style="font-size: 13px;">Horário:</label>
                             <select id="horario" name="horario" required>
@@ -91,7 +77,7 @@
                         </div>
                     </div>
                 </div>
-
+                
                 <!-- PASSO 2: Data e horário final selecionados -->
                 <div class="data-final-combined">
                     <label style="font-size: 12px; color: #666; margin-bottom: 10px; display: block;">Data e horário exatos:</label>
@@ -102,7 +88,7 @@
                                 <option value="">Selecione a data</option>
                             </select>
                         </div>
-
+                        
                         <div class="horario-column">
                             <label for="horario_sorteio">Horário:</label>
                             <select id="horario_sorteio" name="horario_sorteio" required disabled>
@@ -112,18 +98,56 @@
                     </div>
                 </div>
             </div>
-
-
+            <!-- Pagamento -->
+            <label for="modelo_pagamento">Modelo de pagamento:</label>
+            <select name="modelo_pagamento" id="modelo_pagamento">
+                <option value="pix" selected>PIX</option>
+                <option value="cedulas">Cédulas</option>
+                <option value="cartao" class="riscado">Cartão (indisponível)</option>
+            </select>
+            
+            <div id="campo-pix">
+                <label for="chave_pix">Chave PIX:</label>
+                <input type="text" id="chave_pix" name="chave_pix" placeholder="Telefone ou CPF">
+            </div>
+            <!-- Tipo de sorteio -->
+            <label for="tipo_sorteio">Tipo de sorteio:</label>
+            <select name="tipo_sorteio" id="tipo_sorteio">
+                <option value="automatico" selected>Automático (programado)</option>
+                <option value="semi-federal">Semiautomático (Federal)</option>
+                <option value="beta">Beta (API não confiável)</option>
+            </select>
+            
+            <!-- Quantidade de Prêmios -->
+            <label for="quantidade_premios">Quantidade de prêmios:</label>
+            <select id="quantidade_premios" name="quantidade_premios" required>
+                <option value="1" selected>1º lugar</option>
+                <option value="2">1º e 2º lugar</option>
+            </select>
+            
+            <!-- Nome do 1º Prêmio -->
+            <label for="nome_premio_um">Nome do 1º prêmio:</label>
+            <input type="text" id="nome_premio_um" name="nome_premio_um" maxlength="150" placeholder="Ex: iPhone 15" required>
+            
+            <!-- Nome do 2º Prêmio (inicialmente oculto) -->
+            <div id="campo-premio-dois" style="display: none;">
+                <label for="nome_premio_dois">Nome do 2º prêmio:</label>
+                <input type="text" id="nome_premio_dois" name="nome_premio_dois" maxlength="150" placeholder="Ex: Samsung Galaxy S24">
+            </div>
+            
+            
+            
+            
             <!-- INPUT DE IMAGEM ESTILIZADO -->
             <label for="imagem">Imagem do prêmio (PNG/JPG):</label>
             <div class="file-input-wrapper">
                 <input 
-                    type="file" 
-                    id="imagem" 
-                    name="imagem" 
-                    accept="image/png,image/jpeg" 
-                    required 
-                    class="file-input"
+                type="file" 
+                id="imagem" 
+                name="imagem" 
+                accept="image/png,image/jpeg" 
+                required 
+                class="file-input"
                 >
                 <div class="upload-area" id="uploadArea">
                     <div class="upload-icon">
@@ -139,41 +163,37 @@
             </div>
             <!-- Área de erro da imagem -->
             <div id="erro-imagem" 
-                style="color: #d32f2f; 
+            style="color: #d32f2f; 
                         font-size: 14px; 
                         font-weight: 600; 
                         margin-top: 8px; 
                         display: none; 
                         font-family: 'Poppins', sans-serif;">
             </div>
-
+            
             
             <div class="file-info" id="fileInfo"></div>
             <div class="preview-container" id="previewContainer">
                 <label style="margin-bottom: 5px;">Pré-visualização:</label>
                 <img class="preview-image" id="previewImage">
             </div>
-
-            <!-- Visibilidade -->
-            <label for="visibilidade">Visibilidade:</label>
-            <select name="visibilidade" id="visibilidade">
-                <option value="publica" selected>Pública</option>
-                <option value="privada">Privada</option>
+            
+            
+            <!-- Tipo de dezenas -->
+            <label class="quantidade-dezenas" for="tipo_quantidade_dezenas">Quantidade de dezenas:</label>
+            <select id="tipo_quantidade_dezenas" name="tipo_quantidade_dezenas">
+                <option value="1000">000 - 999 (1000 números)</option>
+                <option value="100">00 - 99 (100 números)</option>
+                <option value="25">25 Grupos (25 números)</option>
             </select>
 
-            <!-- Pagamento -->
-            <label for="modelo_pagamento">Modelo de pagamento:</label>
-            <select name="modelo_pagamento" id="modelo_pagamento">
-                <option value="pix" selected>PIX</option>
-                <option value="cedulas">Cédulas</option>
-                <option value="cartao" class="riscado">Cartão (indisponível)</option>
-            </select>
+            <label class="valor-dezena" for="valor_dezena">Valor da dezena (R$):</label>
+            <input type="number" step="0.01" id="valor_dezena" name="valor_dezena" required>
 
-            <div id="campo-pix">
-                <label for="chave_pix">Chave PIX:</label>
-                <input type="text" id="chave_pix" name="chave_pix" placeholder="Telefone ou CPF">
-            </div>
 
+            <label for="valor_premio">Valor do prêmio (R$):</label>
+            <input type="number" step="0.01" id="valor_premio" name="valor_premio" required>
+            
             <!-- Lucro final (hidden para salvar) -->
             <input type="hidden" name="lucro_final" id="lucro_final">
 
@@ -220,6 +240,22 @@
             <br>
             <button class="botao-salvar-rifa" type="submit">Criar Rifa</button>
         </form>
+    </div>
+</div>
+
+<!-- MODAL DE RECORTE DE IMAGEM -->
+<div id="modal-crop-imagem" style="display:none;" class="modal-criar-rifa">
+    <div class="modal-content-form-rifa" style="max-width:600px;">
+        <span id="fechar-crop" class="fechar">&times;</span>
+        <h3>Ajustar imagem</h3>
+
+        <div style="width:100%; max-height:400px;">
+            <img id="crop-image" style="max-width:100%;">
+        </div>
+
+        <button id="confirmar-crop" class="botao-salvar-rifa" style="margin-top:15px;">
+            Usar imagem
+        </button>
     </div>
 </div>
 

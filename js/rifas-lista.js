@@ -40,7 +40,17 @@ document.addEventListener("DOMContentLoaded", () => {
     function carregarMaisRifas() {
 
         fetch(`../php/buscar-rifas.php?status=${estadoAtual}&offset=${offsetAtual}`)
-            .then(res => res.json())
+            .then(res => res.text())
+            .then(text => {
+                // Log raw response for debugging (helps identify HTML/errors breaking JSON.parse)
+                try {
+                    const rifas = JSON.parse(text);
+                    return rifas;
+                } catch (e) {
+                    console.error('Resposta bruta do servidor (não é JSON):', text);
+                    throw e;
+                }
+            })
             .then(rifas => {
 
                 // Se não vier nada:
@@ -81,7 +91,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     card.querySelector(".img-premio").src = r.imagem_premio ?? '';
 
                     // garante valor string e remove espaços extras
-                    const nomeOriginal = (r.nome_premio ?? "").toString().trim();
+                    const nomeOriginal = (r.nome_rifa ?? "").toString().trim();
 
                     // Função de corte (fallback, caso queira cortar pelo JS também)
                     function cortarTexto(texto, limite = 10) {
