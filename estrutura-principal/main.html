@@ -46,7 +46,7 @@
 
     <nav class="navbar">
         <ul>
-            <li><a href="../templates/index.html">Início</a></li>
+            <li><a href="../estrutura-principal/main.html">Início</a></li>
             <li><a href="../templates/resultado.html">Resultado</a></li>
             <li><a href="../templates/reservados.html">Sortu</a></li>
 
@@ -127,7 +127,10 @@
                 <template id="template-card-rifa">
                     <div class="rifa-card">
                         <div class="nome-premio"></div>
-                        <img class="img-premio">
+                        <div class="container-imagens-premio">
+                            <img class="img-premio img-premio-um">
+                            <img class="img-premio img-premio-dois" style="display: none;">
+                        </div>
                         <div class="valor-dezena"></div>
                         <div class="quantidade-dezenas"></div>
                         <div class="data-sorteio"></div>
@@ -220,12 +223,14 @@
     <script src="../js/assinatura.js"></script>
     <script src="../js/modal-conta.js"></script>
     <script src="../js/rifas-lista.js"></script>
-    <script src="../js/modal-criar-rifa.js"></script>
-
-
-    
-
-
+    <script src="../js/modal-criar-rifa.controller.js"></script>
+    <script src="../js/modal-criar-rifa.form.js"></script>
+    <script src="../js/modal-criar-rifa.imagem.js"></script>
+    <script src="../js/modal-criar-rifa.crop.js"></script>
+    <script src="../js/modal-criar-rifa.calculo.js"></script>
+    <script src="../js/modal-criar-rifa.agenda.js"></script>
+    <script src="../js/modal-criar-rifa.validacao.js"></script>
+    <script src="../js/modal-criar-rifa.submit.js"></script>
 
 </body>
 </html>

@@ -26,7 +26,9 @@ $sql = "SELECT
             data_sorteio,
             tipo_quantidade_dezenas,
             valor_dezena,
-            imagem_premio,
+            img_premio_um,
+            img_premio_dois,
+            quantidade_premios,
             status
         FROM rifas
         WHERE email = ? AND status = ?
@@ -48,13 +50,28 @@ while ($r = $result->fetch_assoc()) {
         $r['data_sorteio'] = $data->format('d/m/Y');
     }
 
-    $caminho = $r['imagem_premio'];
-    $caminhoCompleto = $_SERVER['DOCUMENT_ROOT'] . "/site-um/gestor-de-rifa/" . $caminho;
+    // Processar imagem do 1º prêmio
+    $caminho1 = $r['img_premio_um'];
+    $caminhoCompleto1 = $_SERVER['DOCUMENT_ROOT'] . "/site-um/gestor-de-rifa/" . $caminho1;
 
-    if (!file_exists($caminhoCompleto) || empty($caminho)) {
-        $r['imagem_premio'] = "http://localhost/site-um/gestor-de-rifa/midia/erro-imagem/img-quebrada.png";
+    if (!file_exists($caminhoCompleto1) || empty($caminho1)) {
+        $r['img_premio_um'] = "http://localhost/site-um/gestor-de-rifa/midia/erro-imagem/img-quebrada.png";
     } else {
-        $r['imagem_premio'] = "http://localhost/site-um/gestor-de-rifa/" . $caminho;
+        $r['img_premio_um'] = "http://localhost/site-um/gestor-de-rifa/" . $caminho1;
+    }
+
+    // Processar imagem do 2º prêmio (se houver)
+    if ($r['quantidade_premios'] == 2 && !empty($r['img_premio_dois'])) {
+        $caminho2 = $r['img_premio_dois'];
+        $caminhoCompleto2 = $_SERVER['DOCUMENT_ROOT'] . "/site-um/gestor-de-rifa/" . $caminho2;
+
+        if (!file_exists($caminhoCompleto2) || empty($caminho2)) {
+            $r['img_premio_dois'] = "http://localhost/site-um/gestor-de-rifa/midia/erro-imagem/img-quebrada.png";
+        } else {
+            $r['img_premio_dois'] = "http://localhost/site-um/gestor-de-rifa/" . $caminho2;
+        }
+    } else {
+        $r['img_premio_dois'] = null;
     }
 
     $rifas[] = $r;

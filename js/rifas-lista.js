@@ -88,7 +88,21 @@ document.addEventListener("DOMContentLoaded", () => {
                 rifas.forEach(r => {
                     const card = template.content.cloneNode(true);
 
-                    card.querySelector(".img-premio").src = r.imagem_premio ?? '';
+                    // Processar imagens
+                    const imgUm = card.querySelector(".img-premio-um");
+                    const imgDois = card.querySelector(".img-premio-dois");
+
+                    if (imgUm) {
+                        imgUm.src = r.img_premio_um ?? '';
+                    }
+
+                    // Se houver 2 prêmios, mostrar segunda imagem
+                    if (r.quantidade_premios == 2 && r.img_premio_dois) {
+                        if (imgDois) {
+                            imgDois.src = r.img_premio_dois;
+                            imgDois.style.display = "block";
+                        }
+                    }
 
                     // garante valor string e remove espaços extras
                     const nomeOriginal = (r.nome_rifa ?? "").toString().trim();

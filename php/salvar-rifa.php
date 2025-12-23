@@ -77,6 +77,25 @@ if (!empty($erros)) {
 ================================ */
 
 try {
+    // Geração do número serial
+    function gerarSerialRifa() {
+        // Letras aleatórias maiúsculas
+        $letras = '';
+        for ($i = 0; $i < 3; $i++) {
+            $letras .= chr(rand(65, 90)); // A-Z
+        }
+        // Data atual (dia e mês)
+        $dia = date('d');
+        $mes = date('m');
+        // Bloco PI (314)
+        $pi = '314';
+        // Última dezena aleatória
+        $dezena = str_pad(strval(rand(0, 99)), 2, '0', STR_PAD_LEFT);
+        // Monta serial
+        return sprintf('%s-%s-%s-%s.%s', $letras, $dia, $mes, $pi, $dezena);
+    }
+
+    $n_serial = gerarSerialRifa();
     $tipo_dezenas = $_POST["tipo_quantidade_dezenas"];
     $valor_dezena = (float) $_POST["valor_dezena"];
     $nome_rifa    = trim($_POST["nome_rifa"]);
@@ -144,6 +163,10 @@ try {
        BANCO DE DADOS
     ================================ */
 
+    // Se houver 2 prêmios, salvar a mesma imagem em ambas as colunas
+    $img_premio_dois = ($quantidade_premios == 2) ? $caminhoBD : null;
+
+
     $sql = "INSERT INTO rifas (
         email,
         organizador,
@@ -156,20 +179,22 @@ try {
         tipo_sorteio,
         data_sorteio,
         dia_semana_sorteio,
-        imagem_premio,
+        img_premio_um,
+        img_premio_dois,
         visibilidade,
         modelo_pagamento,
         chave_pix,
         lucro_final,
         quantidade_premios,
         nome_premio_um,
-        nome_premio_dois
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        nome_premio_dois,
+        n_serial
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
 
     $stmt->bind_param(
-        "ssssisssssssssdsiss",
+        "ssssdssdssssssssdisss",
         $email,
         $organizador,
         $status,
@@ -182,13 +207,15 @@ try {
         $data_sorteio,
         $dia_semana,
         $caminhoBD,
+        $img_premio_dois,
         $visibilidade,
         $modelo_pagamento,
         $chave_pix,
         $lucro_final,
         $quantidade_premios,
         $nome_premio_um,
-        $nome_premio_dois
+        $nome_premio_dois,
+        $n_serial
     );
 
     $stmt->execute();
