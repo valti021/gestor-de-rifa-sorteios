@@ -35,6 +35,7 @@ $camposObrigatorios = [
     'nome_rifa',
     'valor_premio',
     'tipo_sorteio',
+    'tema_rifa',
     'data_sorteio',
     'horario_sorteio',
     'dia_semana',
@@ -110,6 +111,7 @@ try {
     $valor_dezena = (float) $_POST["valor_dezena"];
     $nome_rifa    = trim($_POST["nome_rifa"]);
     $descricao    = trim($_POST["descricao"] ?? '');
+    $tema_rifa    = trim($_POST["tema_rifa"] ?? '');
     $valor_premio = (float) $_POST["valor_premio"];
     $tipo_sorteio = $_POST["tipo_sorteio"];
 
@@ -238,6 +240,7 @@ try {
         valor_dezena,
         nome_rifa,
         descricao,
+        tema_rifa,
         valor_premio,
         tipo_sorteio,
         data_sorteio,
@@ -252,12 +255,12 @@ try {
         nome_premio_um,
         nome_premio_dois,
         n_serial
-    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+    ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
     $stmt = $conn->prepare($sql);
 
     $stmt->bind_param(
-        "ssssdssdssssssssdisss",
+        "ssssdsssdssssssssdisss",
         $email,
         $organizador,
         $status,
@@ -265,6 +268,7 @@ try {
         $valor_dezena,
         $nome_rifa,
         $descricao,
+        $tema_rifa,
         $valor_premio,
         $tipo_sorteio,
         $data_sorteio,

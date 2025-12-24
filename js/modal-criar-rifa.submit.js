@@ -163,6 +163,7 @@ function exibirErrosBackend(erros) {
         'data_sorteio': 'A data do sorteio não pode ser no passado',
         'horario_sorteio': 'Selecione o horário do sorteio',
         'visibilidade': 'Selecione a visibilidade',
+        'tema_rifa': 'Selecione o tema da rifa',
         'modelo_pagamento': 'Selecione o modelo de pagamento',
         'imagem': 'A imagem é obrigatória (PNG ou JPG, máximo 1.5MB)'
     };

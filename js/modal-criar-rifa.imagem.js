@@ -374,139 +374,21 @@ document.addEventListener("modalCriarRifa:carregado", () => {
     // MODAL DE RECORTE
     // ====================================
     function criarModalRecorte() {
-        const modalHTML = `
-            <div id="modal-recorte-imagem" class="modal-recorte" style="display: none;">
-                <div class="modal-recorte-content" style="background: white; padding: 20px; border-radius: 10px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto;">
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                        <h3 style="margin: 0;">Recortar Imagem (1080×1080)</h3>
-                        <button id="fechar-modal-recorte" style="background: none; border: none; font-size: 24px; cursor: pointer; color: #666;">×</button>
-                    </div>
-                    
-                    <div style="margin-bottom: 15px; padding: 10px; background: #f5f5f5; border-radius: 5px;">
-                        <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 5px;">
-                            <strong>Prêmio:</strong>
-                            <span id="recorte-premio-numero">1</span>
-                        </div>
-                        <div style="font-size: 13px; color: #666;">
-                            Selecione a área da imagem para recortar. O recorte será quadrado (1080×1080 pixels).
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; gap: 20px; margin-bottom: 20px;">
-                        <div style="flex: 2;">
-                            <div id="container-recorte" style="max-height: 400px; overflow: hidden; background: #f0f0f0;">
-                                <!-- Cropper.js será inicializado aqui -->
-                            </div>
-                        </div>
-                        <div style="flex: 1; min-width: 200px;">
-                            <div style="margin-bottom: 15px;">
-                                <strong style="display: block; margin-bottom: 5px;">Preview do recorte:</strong>
-                                <div id="preview-recorte" style="width: 150px; height: 150px; overflow: hidden; border: 2px dashed #ccc; background: #f8f8f8; display: flex; align-items: center; justify-content: center;">
-                                    <span style="color: #999;">Preview aqui</span>
-                                </div>
-                            </div>
-                            <div style="font-size: 12px; color: #666;">
-                                <div style="margin-bottom: 5px;">• Clique e arraste para mover</div>
-                                <div style="margin-bottom: 5px;">• Arraste as bordas para redimensionar</div>
-                                <div>• Use a roda do mouse para zoom</div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div style="display: flex; justify-content: space-between; margin-top: 20px;">
-                        <button id="btn-cancelar-recorte" style="padding: 10px 20px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 5px; cursor: pointer;">
-                            Cancelar
-                        </button>
-                        <button id="btn-aplicar-recorte" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 5px; cursor: pointer;">
-                            Aplicar Recorte
-                        </button>
-                    </div>
-                </div>
-            </div>
-        `;
+        estadoImagens.modalRecorte = document.getElementById('modal-recorte-imagem');
 
-        // Adicionar modal ao body se não existir
-        if (!document.getElementById('modal-recorte-imagem')) {
-            const modalDiv = document.createElement('div');
-            modalDiv.innerHTML = modalHTML;
-            document.body.appendChild(modalDiv.firstElementChild);
-
-            // Adicionar estilos
-            const style = document.createElement('style');
-            style.textContent = `
-                .modal-recorte {
-                    position: fixed;
-                    top: 0;
-                    left: 0;
-                    width: 100%;
-                    height: 100%;
-                    background: rgba(0,0,0,0.7);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    z-index: 10000;
-                    animation: fadeIn 0.3s;
-                }
-                
-                @keyframes fadeIn {
-                    from { opacity: 0; }
-                    to { opacity: 1; }
-                }
-                
-                .preview-card:hover {
-                    transform: translateY(-2px);
-                    transition: transform 0.2s;
-                }
-                
-                .file-item {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: center;
-                    padding: 8px;
-                    background: #f8f9fa;
-                    border-radius: 4px;
-                    margin-bottom: 5px;
-                }
-                
-                .file-item .btn-remover {
-                    background: #dc3545;
-                    color: white;
-                    border: none;
-                    width: 24px;
-                    height: 24px;
-                    border-radius: 50%;
-                    cursor: pointer;
-                    font-size: 16px;
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                }
-                
-                .file-item .btn-remover:hover {
-                    background: #c82333;
-                }
-            `;
-            document.head.appendChild(style);
+        if (!estadoImagens.modalRecorte) {
+            console.warn('Modal de recorte não encontrado no HTML. Insira o markup em estrutura-principal/modal-criar-rifa.html');
+            return;
         }
 
-        estadoImagens.modalRecorte = document.getElementById('modal-recorte-imagem');
-        
         // Configurar event listeners do modal
         const fecharBtn = document.getElementById('fechar-modal-recorte');
         const cancelarBtn = document.getElementById('btn-cancelar-recorte');
         const aplicarBtn = document.getElementById('btn-aplicar-recorte');
 
-        if (fecharBtn) {
-            fecharBtn.addEventListener('click', fecharModalRecorte);
-        }
-
-        if (cancelarBtn) {
-            cancelarBtn.addEventListener('click', fecharModalRecorte);
-        }
-
-        if (aplicarBtn) {
-            aplicarBtn.addEventListener('click', aplicarRecorte);
-        }
+        if (fecharBtn) fecharBtn.addEventListener('click', fecharModalRecorte);
+        if (cancelarBtn) cancelarBtn.addEventListener('click', fecharModalRecorte);
+        if (aplicarBtn) aplicarBtn.addEventListener('click', aplicarRecorte);
 
         // Fechar modal ao clicar fora
         estadoImagens.modalRecorte.addEventListener('click', function(e) {
