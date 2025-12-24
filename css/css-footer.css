@@ -161,43 +161,6 @@ footer {
     font-size: 2rem;
 }
 
-.newsletter-form {
-    display: flex;
-    margin-top: 15px;
-}
-
-.newsletter-form input {
-    flex: 1;
-    padding: 12px 15px;
-    border: none;
-    border-radius: 4px 0 0 4px;
-    outline: none;
-    font-size: 1rem;
-}
-
-.newsletter-form input:focus {
-    box-shadow: 0 0 0 2px var(--verde-engrenagem-destaque);
-}
-
-.newsletter-form button {
-    background-color: var(--verde-engrenagem);
-    color: var(--cor-branco);
-    border: none;
-    padding: 0 20px;
-    border-radius: 0 4px 4px 0;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-    font-size: 1rem;
-}
-
-.newsletter-form button:hover {
-    background-color: var(--verde-engrenagem-hover);
-}
-
-.newsletter-form button:active {
-    background-color: var(--verde-engrenagem-active);
-}
-
 /* Responsividade */
 @media (max-width: 768px) {
     .footer-container {

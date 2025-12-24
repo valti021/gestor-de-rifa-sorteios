@@ -14,6 +14,8 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <link rel="stylesheet" href="../css/modal-conta.css">
     <link rel="stylesheet" href="../css/assinatura.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
 
 
     <style>
@@ -77,71 +79,74 @@
         <h1>GESTOR DE RIFA</h1>
     </header>
 
-    <div class="conteudo-principal">
-
-
         <div class="espaco-anuncio">
             <!-- Espaço reservado para anúncios -->
         </div>
 
-        <nav class="status-vendedor">
-            <ul>
-                <li data-status="ativa">Rifas Ativas: <span id="rifas-ativas">0</span></li>
-                <li data-status="adiada">Rifas Adiadas: <span id="rifas-adiadas">0</span></li>
-                <li data-status="cancelada">Canceladas: <span id="rifas-canceladas">0</span></li>
-                <li data-status="concluida">Concluídas: <span id="rifas-concluidas">0</span></li>
-            </ul>
-        </nav>
+    <main id="conteiner-central">
 
-        <section class="grade-rifas">
-            <div id="conteudo-rifas">
+            <div class="bloco-visualizacao-rifas">
 
-            <h2 id="titulo-aba">
-                <span id="titulo-texto">Rifas Ativas</span>
-                <button id="btn-criar-rifa-icone" class="btn-icone">
-                    <i class="fa-solid fa-plus"></i>
-                </button>
-            </h2>
+                <nav class="status-vendedor">
+                    <ul>
+                        <li data-status="ativa">Rifas Ativas: <span id="rifas-ativas">0</span></li>
+                        <li data-status="adiada">Rifas Adiadas: <span id="rifas-adiadas">0</span></li>
+                        <li data-status="cancelada">Canceladas: <span id="rifas-canceladas">0</span></li>
+                        <li data-status="concluida">Concluídas: <span id="rifas-concluidas">0</span></li>
+                    </ul>
+                </nav>
 
+                <section class="grade-rifas">
+                    <div id="conteudo-rifas">
 
-
-                <div id="bloco-sem-rifas" class="sem-rifas" style="display:none;">
-                    <p id="mensagem-sem-rifas"></p>
-                </div>
-
-                <div class="lista-rifas" id="lista-rifas"></div>
-
-                <div id="carregar-mais" style="display:none; text-align:center; margin-top:10px;">
-                    <button id="btn-carregar-mais" style="
-                        background: none;
-                        border: none;
-                        color: #4CAF50;
-                        text-decoration: underline;
-                        cursor: pointer;
-                        padding: 0;
-                        font: inherit;
-                    ">Carregar mais</button>
-                </div>
+                    <h2 id="titulo-aba">
+                        <span id="titulo-texto">Rifas Ativas</span>
+                        <button id="btn-criar-rifa-icone" class="btn-icone">
+                            <i class="fa-solid fa-plus"></i>
+                        </button>
+                    </h2>
 
 
-                <template id="template-card-rifa">
-                    <div class="rifa-card">
-                        <div class="nome-premio"></div>
-                        <div class="container-imagens-premio">
-                            <img class="img-premio img-premio-um">
-                            <img class="img-premio img-premio-dois" style="display: none;">
+
+                        <div id="bloco-sem-rifas" class="sem-rifas" style="display:none;">
+                            <p id="mensagem-sem-rifas"></p>
                         </div>
-                        <div class="valor-dezena"></div>
-                        <div class="quantidade-dezenas"></div>
-                        <div class="data-sorteio"></div>
-                        <a class="btn-gerenciar" href="#">Ver Detalhes/Gerenciar</a>
+
+                        <div class="lista-rifas" id="lista-rifas"></div>
+
+                        <div id="carregar-mais" style="display:none; text-align:center; margin-top:10px;">
+                            <button id="btn-carregar-mais" style="
+                                background: none;
+                                border: none;
+                                color: #4CAF50;
+                                text-decoration: underline;
+                                cursor: pointer;
+                                padding: 0;
+                                font: inherit;
+                            ">Carregar mais</button>
+                        </div>
+
+
+                        <template id="template-card-rifa">
+                            <div class="rifa-card">
+                                <div class="nome-premio"></div>
+                                <div class="container-imagens-premio">
+                                    <img class="img-premio img-premio-um">
+                                    <img class="img-premio img-premio-dois" style="display: none;">
+                                </div>
+                                <div class="valor-dezena"></div>
+                                <div class="quantidade-dezenas"></div>
+                                <div class="data-sorteio"></div>
+                                <a class="btn-gerenciar" href="#">Ver Detalhes/Gerenciar</a>
+                            </div>
+                        </template>
                     </div>
-                </template>
-
+                </section>
             </div>
-        </section>
+            
+    </main>
 
-    </div>
+
 
     <div class="modal-conta" id="container-modal-conta"></div>
 
@@ -197,15 +202,7 @@
                 </li>
             </ul>
         </div>
-        
-        <div class="footer-section">
-            <h3>Newsletter</h3>
-            <p>Receba novidades e promoções exclusivas.</p>
-            <form class="newsletter-form">
-                <input type="email" placeholder="Seu e-mail" required>
-                <button type="submit"><i class="fas fa-paper-plane"></i></button>
-            </form>
-        </div>
+
     </div>
     
     <div class="footer-bottom">
@@ -226,7 +223,6 @@
     <script src="../js/modal-criar-rifa.controller.js"></script>
     <script src="../js/modal-criar-rifa.form.js"></script>
     <script src="../js/modal-criar-rifa.imagem.js"></script>
-    <script src="../js/modal-criar-rifa.crop.js"></script>
     <script src="../js/modal-criar-rifa.calculo.js"></script>
     <script src="../js/modal-criar-rifa.agenda.js"></script>
     <script src="../js/modal-criar-rifa.validacao.js"></script>

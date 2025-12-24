@@ -13,4 +13,6 @@
   --sombra-profunda: rgba(0, 0, 0, 0.61);
   --sombra-suave: rgba(0, 0, 0, 0.1);
   --cor-vermelho: #ff0000;
+  --verde-degrade: linear-gradient(135deg, #13a700 0%, #4CAF50 50%, #388E3C 100%);
+  --verde-fundo-claro: #f0f9f0;
 }

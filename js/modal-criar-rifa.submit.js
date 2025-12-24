@@ -20,6 +20,28 @@ document.addEventListener("modalCriarRifa:enviarFormulario", (event) => {
 function enviarFormulario(form) {
     const formData = new FormData(form);
     
+    // Obter imagens recortadas do módulo de imagem
+    let imagensRecortadas = [];
+    if (window.ImagemUtils && window.ImagemUtils.obterImagensRecortadas) {
+        imagensRecortadas = window.ImagemUtils.obterImagensRecortadas();
+    }
+    
+    console.log('📸 Imagens recortadas encontradas:', imagensRecortadas.length);
+    imagensRecortadas.forEach((img, idx) => {
+        console.log(`  ${idx + 1}. ${img.nome} - Tamanho: ${img.data.length} chars`);
+    });
+    
+    // Adicionar quantidade de imagens
+    formData.set('quantidade_imagens', imagensRecortadas.length);
+    
+    // Adicionar dados das imagens recortadas
+    imagensRecortadas.forEach((imagem, index) => {
+        formData.append(`imagem_${index}`, imagem.data);
+        formData.append(`imagem_nome_${index}`, imagem.nome);
+    });
+    
+    console.log('📤 FormData preparado com quantidade_imagens:', imagensRecortadas.length);
+    
     // Mostrar loading no botão
     const botaoSubmit = form.querySelector('.botao-salvar-rifa');
     const textoOriginal = botaoSubmit ? botaoSubmit.textContent : 'Criar Rifa';
@@ -123,6 +145,7 @@ function exibirErrosBackend(erros) {
     }
     
     console.log('Erros recebidos do backend:', erros);
+    console.log('Erros detalhados:', JSON.stringify(erros, null, 2));
     
     if (window.ValidacaoUtils) {
         window.ValidacaoUtils.limparErros();

@@ -57,8 +57,18 @@ if (isset($_POST["quantidade_premios"]) && $_POST["quantidade_premios"] == "2") 
     }
 }
 
-// Imagem
-if (!isset($_FILES["imagem"]) || $_FILES["imagem"]["error"] !== UPLOAD_ERR_OK) {
+// Validar imagens
+$quantidadePremios = isset($_POST["quantidade_premios"]) ? (int)$_POST["quantidade_premios"] : 1;
+$quantidadeImagens = isset($_POST["quantidade_imagens"]) ? (int)$_POST["quantidade_imagens"] : 0;
+
+// Debug: registrar informações
+error_log("DEBUG: Quantidade de Prêmios: " . $quantidadePremios);
+error_log("DEBUG: Quantidade de Imagens Recebidas: " . $quantidadeImagens);
+error_log("DEBUG: POST data keys: " . implode(", ", array_keys($_POST)));
+
+// Verificar se temos as imagens necessárias
+if ($quantidadeImagens < $quantidadePremios) {
+    error_log("DEBUG: ERRO - Imagens insuficientes. Necessário: $quantidadePremios, Recebido: $quantidadeImagens");
     $erros[] = "imagem";
 }
 
@@ -136,12 +146,10 @@ try {
     $nome_premio_dois = ($quantidade_premios == 2) ? trim($_POST["nome_premio_dois"]) : null;
 
     /* ===============================
-       IMAGEM
+       PROCESSAMENTO DAS IMAGENS
     ================================ */
 
-    $imagem = $_FILES["imagem"];
-    $ext    = strtolower(pathinfo($imagem["name"], PATHINFO_EXTENSION));
-
+    // Criar pasta para as imagens
     $nomeFormatado = preg_replace('/[^a-z0-9_-]/i', '',
         str_replace(' ', '-', strtolower($nome_rifa))
     );
@@ -151,21 +159,76 @@ try {
         mkdir($pastaImg, 0777, true);
     }
 
-    $novoNome   = uniqid("premio_", true) . "." . $ext;
-    $caminhoFS  = $pastaImg . $novoNome;
-    $caminhoBD  = "uploads/rifas/{$nomeFormatado}/{$novoNome}";
+    // Variáveis para os caminhos das imagens
+    $caminhoImgPremioUm = null;
+    $caminhoImgPremioDois = null;
 
-    if (!move_uploaded_file($imagem["tmp_name"], $caminhoFS)) {
-        throw new Exception("Erro ao salvar imagem.");
+    // Obter quantidade de imagens enviadas
+    $quantidadeImagens = isset($_POST["quantidade_imagens"]) ? (int)$_POST["quantidade_imagens"] : 0;
+
+    // Processar imagens em base64
+    for ($i = 0; $i < $quantidadeImagens; $i++) {
+        $campoImagem = "imagem_" . $i;
+        $campoNome = "imagem_nome_" . $i;
+        
+        if (!isset($_POST[$campoImagem]) || empty($_POST[$campoImagem])) {
+            throw new Exception("Imagem " . ($i + 1) . " não encontrada.");
+        }
+        
+        $dadosBase64 = $_POST[$campoImagem];
+        $nomeOriginal = isset($_POST[$campoNome]) ? $_POST[$campoNome] : "imagem_" . $i;
+        
+        // Extrair extensão do nome original
+        $ext = pathinfo($nomeOriginal, PATHINFO_EXTENSION);
+        if (!$ext || !in_array(strtolower($ext), ['jpg', 'jpeg', 'png'])) {
+            $ext = 'png';
+        }
+        
+        // Decodificar base64
+        if (strpos($dadosBase64, 'data:image') === 0) {
+            // Remove o prefixo "data:image/...;base64,"
+            $dadosBase64 = explode(',', $dadosBase64)[1];
+        }
+        
+        $dadosBinarios = base64_decode($dadosBase64, true);
+        if (!$dadosBinarios) {
+            throw new Exception("Erro ao decodificar imagem " . ($i + 1) . ".");
+        }
+        
+        // Salvar imagem
+        if ($i === 0) {
+            $novoNome = "premio_um." . $ext;
+            $caminhoFS = $pastaImg . $novoNome;
+            
+            if (file_put_contents($caminhoFS, $dadosBinarios) === false) {
+                throw new Exception("Erro ao salvar imagem do 1º prêmio.");
+            }
+            
+            $caminhoImgPremioUm = "uploads/rifas/{$nomeFormatado}/{$novoNome}";
+        } elseif ($i === 1) {
+            $novoNome = "premio_dois." . $ext;
+            $caminhoFS = $pastaImg . $novoNome;
+            
+            if (file_put_contents($caminhoFS, $dadosBinarios) === false) {
+                throw new Exception("Erro ao salvar imagem do 2º prêmio.");
+            }
+            
+            $caminhoImgPremioDois = "uploads/rifas/{$nomeFormatado}/{$novoNome}";
+        }
+    }
+    
+    // Validar se temos as imagens necessárias
+    if (!$caminhoImgPremioUm) {
+        throw new Exception("Imagem do 1º prêmio não foi processada.");
+    }
+    
+    if ($quantidade_premios == 2 && !$caminhoImgPremioDois) {
+        throw new Exception("Imagem do 2º prêmio não foi processada.");
     }
 
     /* ===============================
        BANCO DE DADOS
     ================================ */
-
-    // Se houver 2 prêmios, salvar a mesma imagem em ambas as colunas
-    $img_premio_dois = ($quantidade_premios == 2) ? $caminhoBD : null;
-
 
     $sql = "INSERT INTO rifas (
         email,
@@ -206,8 +269,8 @@ try {
         $tipo_sorteio,
         $data_sorteio,
         $dia_semana,
-        $caminhoBD,
-        $img_premio_dois,
+        $caminhoImgPremioUm,
+        $caminhoImgPremioDois,
         $visibilidade,
         $modelo_pagamento,
         $chave_pix,
@@ -219,15 +282,32 @@ try {
     );
 
     $stmt->execute();
+    
+    // Obter o ID da rifa criada
+    $rifa_id = $conn->insert_id;
     $stmt->close();
 
     echo json_encode([
         "tipo"    => "sucesso",
         "mensagem"=> "Rifa criada com sucesso!",
+        "rifa_id" => $rifa_id,
         "redirect" => "main.html"
     ]);
 
 } catch (Exception $e) {
+    // Se ocorrer erro, tentar limpar as imagens salvas
+    if (isset($pastaImg) && is_dir($pastaImg)) {
+        // Remover arquivos criados
+        if (isset($caminhoImgPremioUm) && file_exists("../" . $caminhoImgPremioUm)) {
+            unlink("../" . $caminhoImgPremioUm);
+        }
+        if (isset($caminhoImgPremioDois) && file_exists("../" . $caminhoImgPremioDois)) {
+            unlink("../" . $caminhoImgPremioDois);
+        }
+        // Tentar remover pasta se estiver vazia
+        @rmdir($pastaImg);
+    }
+    
     http_response_code(500);
     echo json_encode([
         "tipo"     => "erro_geral",

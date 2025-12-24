@@ -162,6 +162,8 @@
 }
 
 
+
+
 .quantidade-dezenas {
     font-size: 13px;
 
@@ -201,13 +203,6 @@
 .btn-gerenciar:hover {
     text-decoration: underline; /* cara de link mesmo */
     opacity: 0.8;
-}
-
-
-.conteudo-principal {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px 20px;
 }
 
 .status-vendedor {

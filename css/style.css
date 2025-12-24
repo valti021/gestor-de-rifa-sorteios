@@ -257,55 +257,12 @@ h1 {
   font-size: 14px;
 }
 
-/* Container principal para conteúdo */
-.conteudo-principal {
-  width: 100%;
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 0 20px;
-  box-sizing: border-box;
+#conteiner-central .bloco-visualizacao-rifas {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px 20px;
 }
 
-/* Utilitários responsivos */
-@media (max-width: 768px) {
-  .hide-on-mobile {
-    display: none !important;
-  }
-  
-  .show-on-mobile {
-    display: block !important;
-  }
-}
-
-@media (min-width: 769px) {
-  .hide-on-desktop {
-    display: none !important;
-  }
-  
-  .show-on-desktop {
-    display: block !important;
-  }
-}
-
-/* Ajustes gerais para melhor responsividade */
-* {
-  -webkit-tap-highlight-color: transparent; /* Remove highlight azul em mobile */
-}
-
-/* Melhorias para touch em dispositivos móveis */
-@media (hover: none) and (pointer: coarse) {
-  .navbar a,
-  button,
-  .icone-conta,
-  .icone-engrenagem {
-    min-height: 44px; /* Tamanho mínimo para touch */
-    min-width: 44px;
-  }
-  
-  .top-bar:hover {
-    transform: none; /* Remove transform em dispositivos touch */
-  }
-}
 
 
 
