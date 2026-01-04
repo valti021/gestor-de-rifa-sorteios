@@ -1,13 +1,7 @@
 .grade-rifas {
-    padding: 20px;
     max-width: 1200px;
     margin: 20px auto;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background: var(--cor-branco);
-    border-radius: 12px;
-    box-shadow: 0 4px 12px var(--sombra-suave);
 }
-
 #conteudo-rifas {
     background-color: var(--cor-branco);
     border-radius: 12px;
@@ -87,123 +81,6 @@
     box-shadow: 0 4px 8px var(--sombra-suave);
 }
 
-.rifa-card {
-    background-color: var(--cor-branco);
-    border-radius: 10px;
-    padding: 20px;
-    box-shadow: 0 3px 10px var(--sombra-suave);
-    border-left: 5px solid var(--verde-principal);
-    border: 1px solid var(--verde-claro);
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    transition: all 0.3s ease;
-    min-height: 115px;
-    font-family: 'Nunito', sans-serif;
-}
-
-.rifa-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 6px 15px var(--sombra-suave);
-    border-color: var(--verde-principal);
-}
-
-
-
-
-/* limita visualmente o nome do prêmio e mostra reticências */
-.nome-premio strong {
-    display: inline-block;
-    max-width: 20ch;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    vertical-align: middle;
-    color: var(--cinza-titulo);
-    font-size: 15px;
-    font-weight: 600;
-    margin-bottom: 10px;
-    word-wrap: break-word;
-    font-family: 'Poppins', sans-serif;
-}
-
-
-
-.img-premio {
-    width: 100%;
-    max-width: 100%;        
-    height: auto;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-/* Container para duas imagens lado a lado */
-.container-imagens-premio {
-    display: flex;
-    gap: 8px;
-    width: 100%;
-    align-items: center;
-}
-
-.img-premio-um {
-    flex: 1;
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-.img-premio-dois {
-    flex: 1;
-    width: 100%;
-    height: 150px;
-    object-fit: cover;
-    border-radius: 8px;
-}
-
-
-
-
-.quantidade-dezenas {
-    font-size: 13px;
-
-    color: var(--cinza-titulo);
-    margin-bottom: 5px;
-}
-
-.valor-dezena {
-    font-size: 12px;
-    font-weight: 600;
-    color: var(--cinza-titulo);
-    margin-bottom: 5px;
-}
-
-
-.data-sorteio {
-    color: var(--cinza-titulo);
-    font-size: 14px;
-    margin-bottom: 20px;
-    font-family: 'Nunito', sans-serif;
-    opacity: 0.7;
-}
-
-
-.btn-gerenciar {
-    display: block;          /* vira um bloco pra poder centralizar */
-    text-align: center;      /* centraliza o texto */
-    margin-top: 10px;        /* dá um respiro */
-    color: var(--verde-principal); /* usa o verde do sistema */
-    font-weight: 600;
-    font-size: 15px;
-    text-decoration: none;   /* fica limpo */
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.btn-gerenciar:hover {
-    text-decoration: underline; /* cara de link mesmo */
-    opacity: 0.8;
-}
 
 .status-vendedor {
     background: var(--cor-branco);
@@ -418,4 +295,3 @@
 .status-vendedor li[data-status="concluida"].ativo span {
     color: #5C6BC0;
 }
-

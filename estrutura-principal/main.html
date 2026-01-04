@@ -19,32 +19,10 @@
 
     <link rel="stylesheet" href="../css/cookie-consent.css">
 
-
-    <style>
-
-
-        /* Container da grade de rifas - Versão 1: Altura Fixa */
-        .lista-rifas {
-            display: grid !important;
-            grid-template-columns: repeat(auto-fill, minmax(20px, 1fr)) !important;
-            gap: 25px !important;
-            padding: 15px !important;
-            /* Versão 1: Altura Fixa */
-            max-height: 455px !important; 
-            overflow-y: auto !important; 
-            /* ---------------------------------------------------- */
-        }
-
-        /* Limitar a 4 colunas em telas grandes (mantém o controle responsivo) */
-        @media (min-width: 1200px) {
-            .lista-rifas {
-                grid-template-columns: repeat(4, 1fr) !important;
-            }
-        }
+    <link rel="stylesheet" href="../css/card-rifas.css">
+    <link rel="stylesheet" href="../css/navbar.css">
 
 
-
-    </style>
 </head>
 <body>
 
@@ -241,6 +219,7 @@
     <script src="../js/modal-criar-rifa.agenda.js"></script>
     <script src="../js/modal-criar-rifa.validacao.js"></script>
     <script src="../js/modal-criar-rifa.submit.js"></script>
+    <script src="../js/navbar-responsive.js"></script>
 
 </body>
 </html>
