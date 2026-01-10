@@ -8,24 +8,18 @@
 }
 
 html, body {
-  height: 100%;
+
+
+  flex-direction: column;
   font-family: Arial, sans-serif;
-  line-height: 1.5;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+}
+main{
+  padding: 1.0rem;
 }
 
-img, picture, video, canvas, svg {
-  display: block;
-  max-width: 100%;
-}
 
-input, button, textarea, select {
-  font: inherit;
-  border: none;
-  outline: none;
-  background: none;
-}
+
+
 
 a {
   text-decoration: none;

@@ -13,7 +13,7 @@ function carregarStatus() {
 }
 
 // ======================================================================
-//  VARIÁVEIS DE CONTROLE DO SISTEMA DE PAGINAÇÃO
+//  CONTROLE DE PAGINAÇÃO
 // ======================================================================
 let estadoAtual = "ativa";
 let offsetAtual = 0;
@@ -21,197 +21,194 @@ const limite = 4;
 
 document.addEventListener("DOMContentLoaded", () => {
 
-    const tabs         = document.querySelectorAll(".status-vendedor li");
-    const tituloTexto  = document.getElementById("titulo-texto");
-    const lista        = document.getElementById("lista-rifas");
-    const blocoSem     = document.getElementById("bloco-sem-rifas");
-    const msgSem       = document.getElementById("mensagem-sem-rifas");
-    const botaoCriar   = document.getElementById("btn-criar-rifa-icone");
-    const btnMais      = document.getElementById("carregar-mais");
-    const btnMaisClick = document.getElementById("btn-carregar-mais");
+    const tabs        = document.querySelectorAll(".status-vendedor li");
+    const tituloTexto = document.getElementById("titulo-texto");
+    const lista       = document.getElementById("lista-rifas");
+    const blocoSem    = document.getElementById("bloco-sem-rifas");
+    const msgSem      = document.getElementById("mensagem-sem-rifas");
+    const botaoCriar  = document.getElementById("btn-criar-rifa-icone");
+    const btnMaisBox  = document.getElementById("carregar-mais");
+    const btnMais     = document.getElementById("btn-carregar-mais");
 
+    // CARD BASE (HTML PRONTO)
+    const cardBase = document.querySelector(".rifa-card-example");
+    cardBase.style.display = "none";
 
-
-
-
-    // ------------------------------------------------------------------
-    //   FUNÇÃO PRINCIPAL QUE BUSCA 4 RIFAS POR VEZ
-    // ------------------------------------------------------------------
+    // ==================================================================
+    //  BUSCAR RIFAS
+    // ==================================================================
     function carregarMaisRifas() {
 
         fetch(`../php/buscar-rifas.php?status=${estadoAtual}&offset=${offsetAtual}`)
             .then(res => res.text())
             .then(text => {
-                // Log raw response for debugging (helps identify HTML/errors breaking JSON.parse)
                 try {
-                    const rifas = JSON.parse(text);
-                    return rifas;
-                } catch (e) {
-                    console.error('Resposta bruta do servidor (não é JSON):', text);
-                    throw e;
+                    return JSON.parse(text);
+                } catch {
+                    console.error("Resposta inválida:", text);
+                    throw new Error("JSON inválido");
                 }
             })
             .then(rifas => {
 
-                // Se não vier nada:
                 if (rifas.length === 0) {
                     if (offsetAtual === 0) {
-                        // Primeira busca e não tem nada
                         lista.style.display = "none";
                         blocoSem.style.display = "block";
                         msgSem.innerHTML = `Nenhuma rifa em <strong>${estadoAtual}</strong>.`;
-
-                        btnMais.style.display = "none";
-
-                        if (estadoAtual === "ativa") {
-                            botaoCriar.style.display = "inline-flex";
-                        } else {
-                            botaoCriar.style.display = "none";
-                        }
+                        btnMaisBox.style.display = "none";
+                        botaoCriar.style.display = (estadoAtual === "ativa") ? "inline-flex" : "none";
                     } else {
-                        // Não tem mais para carregar
-                        btnMais.style.display = "none";
+                        btnMaisBox.style.display = "none";
                     }
                     return;
                 }
 
-                // Se vier conteúdo
                 lista.style.display = "grid";
                 blocoSem.style.display = "none";
 
-                function cortarTexto(texto, limite = 10) {
-                    if (texto.length <= limite) return texto;
-                    return texto.substring(0, limite) + "...";
-                }
-                const template = document.getElementById("template-card-rifa");
+                rifas.forEach(obj => {
 
-                rifas.forEach(r => {
-                    const card = template.content.cloneNode(true);
+                    const cardKey = Object.keys(obj)[0];
+                    const dados   = obj[cardKey];
+                    const cardId  = cardKey.replace("card-", "");
 
-                    // Processar imagens
-                    const imgUm = card.querySelector(".img-premio-um");
-                    const imgDois = card.querySelector(".img-premio-dois");
-
-                    if (imgUm) {
-                        imgUm.src = r.img_premio_um ?? '';
-                    }
-
-                    // Se houver 2 prêmios, mostrar segunda imagem
-                    if (r.quantidade_premios == 2 && r.img_premio_dois) {
-                        if (imgDois) {
-                            imgDois.src = r.img_premio_dois;
-                            imgDois.style.display = "block";
-                        }
-                    }
-
-                    // garante valor string e remove espaços extras
-                    const nomeOriginal = (r.nome_rifa ?? "").toString().trim();
-
-                    // Função de corte (fallback, caso queira cortar pelo JS também)
-                    function cortarTexto(texto, limite = 10) {
+                    function limitarTexto(texto, limite = 25) {
                         if (!texto) return "";
-                        return (texto.length <= limite) ? texto : texto.slice(0, limite) + "...";
+                        if (texto.length <= limite) return texto;
+
+                        return texto.substring(0, limite).trim() + "...";
                     }
 
-                    const nomeLimitado = cortarTexto(nomeOriginal, 10);
 
-                    // utiliza textContent (evita injeção de HTML)
-                    const elNome = card.querySelector(".nome-premio");
-                    if (elNome) {
-                        // coloca o <strong> de forma segura usando createElement
-                        const strong = document.createElement("strong");
-                        strong.textContent = nomeLimitado;
-                        // título com o nome completo (tooltip)
-                        strong.title = nomeOriginal;
-                        // limpa e adiciona
-                        elNome.textContent = "";
-                        elNome.appendChild(strong);
+                    // CLONA CARD PRONTO
+                    const card = cardBase.cloneNode(true);
+                    card.style.display = "block";
+
+                    // TÍTULO
+                    card.querySelector(".title").textContent = limitarTexto(dados.title, 25);
+
+
+                    // DESCRIÇÃO
+                    card.querySelector(".descricao .texto").textContent =
+                        dados.description ?? "";
+
+                    // PREÇO
+                    card.querySelector(".price").textContent =
+                        dados.price ?? "0,00";
+
+                    // VENDIDOS
+                    card.querySelector(".tickets-sold").innerHTML =
+                        `<i class="fas fa-ticket-alt"></i> ${dados["tickets-sold"] ?? "0/0"}`;
+
+                    // DATA
+                    card.querySelector(".draw-date").innerHTML =
+                        `<i class="far fa-calendar"></i> ${dados["draw-date"] ?? ""}`;
+
+                    // IMAGENS
+                    const imgContainer = card.querySelector(".img-container");
+                    const paginacao    = card.querySelector(".indentificador-de-paginacao");
+
+                    imgContainer.innerHTML = "";
+                    paginacao.innerHTML = "";
+
+                    const imagens = [];
+                    if (dados.img?.["img-1"]) imagens.push(dados.img["img-1"]);
+                    if (dados.img?.["img-2"]) imagens.push(dados.img["img-2"]);
+
+                    let imgIndex = 0;
+
+                    const img = document.createElement("img");
+                    img.src = imagens[0] ?? "";
+                    imgContainer.appendChild(img);
+
+                    // CRIA BOLINHAS
+                    imagens.forEach((_, index) => {
+                        const dot = document.createElement("span");
+                        if (index === 0) dot.classList.add("ativo");
+
+                        dot.addEventListener("click", () => {
+                            imgIndex = index;
+                            atualizarImagem();
+                        });
+
+                        paginacao.appendChild(dot);
+                    });
+
+                    const dots = paginacao.querySelectorAll("span");
+
+                    function atualizarImagem() {
+                        img.src = imagens[imgIndex];
+                        dots.forEach(d => d.classList.remove("ativo"));
+                        dots[imgIndex].classList.add("ativo");
                     }
 
-                    card.querySelector(".quantidade-dezenas").textContent =
-                        `Quantidade de dezenas: ${r.tipo_quantidade_dezenas ?? ''}`;
+                    const btnLeft  = card.querySelector(".btn-left");
+                    const btnRight = card.querySelector(".btn-right");
 
-                    card.querySelector(".valor-dezena").textContent =
-                        `Valor por dezena: R$ ${Number(r.valor_dezena ?? 0).toFixed(2)}`;
+                    if (imagens.length > 1) {
+                        btnLeft.onclick = () => {
+                            imgIndex = (imgIndex - 1 + imagens.length) % imagens.length;
+                            atualizarImagem();
+                        };
 
-                    card.querySelector(".data-sorteio").textContent =
-                        `Data do sorteio: ${r.data_sorteio ?? ''}`;
+                        btnRight.onclick = () => {
+                            imgIndex = (imgIndex + 1) % imagens.length;
+                            atualizarImagem();
+                        };
+                    } else {
+                        btnLeft.style.display  = "none";
+                        btnRight.style.display = "none";
+                        paginacao.style.display = "none";
+                    }
 
 
-                    card.querySelector(".btn-gerenciar").onclick = () => {
-                        window.open(
-                            "informacoes-gestao.html?informacoes_gestao=" + encodeURIComponent(nomeOriginal),
-                            "_blank"
-                        );
-                    };
+                    // LINK GERENCIAR
+                    card.querySelector(".gerenciar").href =
+                        `informacoes-gestao.html?id=${cardId}`;
 
                     lista.appendChild(card);
                 });
 
-
-
-                // atualizar offset
                 offsetAtual += limite;
-
-                // Se vier menos de 4, acabou
-                btnMais.style.display = (rifas.length < limite) ? "none" : "block";
+                btnMaisBox.style.display = (rifas.length < limite) ? "none" : "block";
             })
-
-            .catch(err => {
-                console.error(err);
-                blocoSem.style.display = "block";
+            .catch(() => {
                 lista.style.display = "none";
+                blocoSem.style.display = "block";
                 msgSem.textContent = "Erro ao carregar rifas.";
             });
     }
 
-    // ------------------------------------------------------------------
-    //   MUDA DE STATUS (aba clicada)
-    // ------------------------------------------------------------------
-    function trocarStatus(novoStatus, textoAba) {
-
-        estadoAtual = novoStatus;
+    // ==================================================================
+    //  TROCA STATUS
+    // ==================================================================
+    function trocarStatus(status, texto) {
+        estadoAtual = status;
         offsetAtual = 0;
-
-        lista.innerHTML = ""; // limpa cards
-        tituloTexto.textContent = textoAba;
-
-        // Controle do botão +
-        botaoCriar.style.display = (novoStatus === "ativa") ? "inline-flex" : "none";
-
-        // Carrega os primeiros 4
+        lista.innerHTML = "";
+        tituloTexto.textContent = texto;
+        botaoCriar.style.display = (status === "ativa") ? "inline-flex" : "none";
         carregarMaisRifas();
     }
 
-    // ------------------------------------------------------------------
-    //   MARCAR ABA ATIVA
-    // ------------------------------------------------------------------
-    function marcarAtiva(elem) {
-        tabs.forEach(li => li.classList.remove("ativo"));
-        elem.classList.add("ativo");
-    }
-
-    // ------------------------------------------------------------------
-    //   EVENTO DE TROCA DE ABA
-    // ------------------------------------------------------------------
+    // ==================================================================
+    //  EVENTOS
+    // ==================================================================
     tabs.forEach(tab => {
         tab.addEventListener("click", () => {
-            marcarAtiva(tab);
-            const status = tab.dataset.status;
-            const texto  = tab.textContent.split(":")[0].trim();
-            trocarStatus(status, texto);
+            tabs.forEach(t => t.classList.remove("ativo"));
+            tab.classList.add("ativo");
+            trocarStatus(tab.dataset.status, tab.textContent.split(":")[0].trim());
         });
     });
 
-    // ------------------------------------------------------------------
-    //   BOTÃO "CARREGAR MAIS"
-    // ------------------------------------------------------------------
-    btnMaisClick.addEventListener("click", carregarMaisRifas);
+    btnMais.addEventListener("click", carregarMaisRifas);
 
-    // ------------------------------------------------------------------
-    //   PRIMEIRO CARREGAMENTO DA PÁGINA
-    // ------------------------------------------------------------------
+    // ==================================================================
+    //  INIT
+    // ==================================================================
     carregarStatus();
-    marcarAtiva(tabs[0]);
-    trocarStatus("ativa", "Rifas Ativas");
+    tabs[0].classList.add("ativo");
+    trocarStatus("ativa", "Ativas");
 });

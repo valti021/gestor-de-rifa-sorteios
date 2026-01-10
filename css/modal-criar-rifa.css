@@ -26,8 +26,15 @@
 
 
 
-
-
+.erro-geral{
+    background-color: #ffdddd;
+    border-left: 6px solid #f44336;
+    padding: 10px 15px;
+    margin-bottom: 20px;
+    color: #a94442;
+    font-family: 'Nunito', sans-serif;
+    border-radius: 5px;
+}
 
 
 

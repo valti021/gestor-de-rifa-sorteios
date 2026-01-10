@@ -15,4 +15,20 @@
   --cor-vermelho: #ff0000;
   --verde-degrade: linear-gradient(135deg, #13a700 0%, #4CAF50 50%, #388E3C 100%);
   --verde-fundo-claro: #f0f9f0;
+
+  /* Teste de novas cores */
+
+  --primary-color: #4CAF50;
+  --primary-dark: #3d8b40;
+  --secondary-color: #2196F3;
+  --accent-color: #FF9800;
+  --dark-color: #333;
+  --light-color: #f5f5f5;
+  --gray-color: #777;
+  --light-gray: #f0f0f0;
+  --border-color: #ddd;
+  --shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  --transition: all 0.3s ease;
+
+
 }

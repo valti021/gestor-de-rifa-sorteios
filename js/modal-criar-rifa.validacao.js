@@ -65,6 +65,30 @@ document.addEventListener("modalCriarRifa:carregado", () => {
             }
         });
 
+        // ===============================
+        // Validar tamanho do nome da rifa
+        // ===============================
+        const nomeRifaInput = document.getElementById('nome_rifa');
+        if (nomeRifaInput && nomeRifaInput.value) {
+            if (nomeRifaInput.value.length > 25) {
+                nomeRifaInput.style.borderColor = '#d32f2f';
+                nomeRifaInput.style.boxShadow = '0 0 0 2px rgba(211, 47, 47, 0.2)';
+                erros.push('O nome da rifa não pode ter mais de 25 caracteres.');
+            }
+        }
+
+        // ==================================
+        // Validar tamanho da descrição da rifa
+        // ==================================
+        const descricaoInput = document.getElementById('descricao');
+        if (descricaoInput && descricaoInput.value) {
+            if (descricaoInput.value.length > 100) {
+                descricaoInput.style.borderColor = '#d32f2f';
+                descricaoInput.style.boxShadow = '0 0 0 2px rgba(211, 47, 47, 0.2)';
+                erros.push('A descrição da rifa não pode ter mais de 100     caracteres.');
+            }
+        }
+
         // Validar 2º prêmio se selecionado
         const quantidadePremiosInput = document.getElementById('quantidade_premios');
         if (quantidadePremiosInput && quantidadePremiosInput.value === '2') {
@@ -121,6 +145,9 @@ document.addEventListener("modalCriarRifa:carregado", () => {
 
         return erros;
     }
+
+
+
 
     function exibirErros(erros) {
         const erroGeralDiv = document.getElementById('erro-geral');

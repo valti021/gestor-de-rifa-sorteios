@@ -151,12 +151,9 @@ try {
        PROCESSAMENTO DAS IMAGENS
     ================================ */
 
-    // Criar pasta para as imagens
-    $nomeFormatado = preg_replace('/[^a-z0-9_-]/i', '',
-        str_replace(' ', '-', strtolower($nome_rifa))
-    );
 
-    $pastaImg = "../uploads/rifas/{$nomeFormatado}/";
+
+    $pastaImg = "../uploads/rifas/{$n_serial}/";
     if (!is_dir($pastaImg)) {
         mkdir($pastaImg, 0777, true);
     }
@@ -206,7 +203,7 @@ try {
                 throw new Exception("Erro ao salvar imagem do 1º prêmio.");
             }
             
-            $caminhoImgPremioUm = "uploads/rifas/{$nomeFormatado}/{$novoNome}";
+            $caminhoImgPremioUm = "uploads/rifas/{$n_serial}/{$novoNome}";
         } elseif ($i === 1) {
             $novoNome = "premio_dois." . $ext;
             $caminhoFS = $pastaImg . $novoNome;
@@ -215,7 +212,7 @@ try {
                 throw new Exception("Erro ao salvar imagem do 2º prêmio.");
             }
             
-            $caminhoImgPremioDois = "uploads/rifas/{$nomeFormatado}/{$novoNome}";
+            $caminhoImgPremioDois = "uploads/rifas/{$n_serial}/{$novoNome}";
         }
     }
     
