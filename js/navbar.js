@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
 
-    fetch("../php/getUser.php") // ajuste o caminho se necessário
+    fetch("../php/getUser.php")
         .then(res => res.json())
         .then(dados => {
 

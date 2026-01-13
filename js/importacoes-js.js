@@ -13,10 +13,11 @@ import './modal-conta.js';
 import './rifas-lista.js';
 
 // Criar rifa
-import './modal-criar-rifa.controller.js';
+import './modal-criar-rifa/modal-criar-rifa.controller.js';
 import './modal-criar-rifa.form.js';
 import './modal-criar-rifa.imagem.js';
 import './modal-criar-rifa.calculo.js';
-import './modal-criar-rifa.agenda.js';
 import './modal-criar-rifa.validacao.js';
 import './modal-criar-rifa.submit.js';
+import './image-cropper.js';
+

@@ -39,17 +39,15 @@
             <!-- Visibilidade -->
             <label for="visibilidade">Visibilidade:</label>
             <select name="visibilidade" id="visibilidade">
-                <option value="publica" selected>Pública</option>
-                <option value="privada">Privada</option>
+                <option value="">Carregando...</option>
             </select>
+
             <!-- Tema da rifa -->
             <label for="tema_rifa">Tema da Rifa:</label>
             <select id="tema_rifa" name="tema_rifa" required>
-                <option value="">Selecione</option>
-                <option value="Beneficente">Beneficente</option>
-                <option value="Solidaria">Solidária</option>
-                <option value="Diversão" selected>Diversão</option>
+                <option value="">Carregando...</option>
             </select>
+
 
             
             <div class="data-sorteio-container">
@@ -62,15 +60,17 @@
                         <div class="filtro-column">
                             <label for="dia_semana" style="font-size: 13px;">Dia da semana:</label>
                             <select id="dia_semana" name="dia_semana" required>
-                                <option value="">Selecione</option>
+                                <option value="">Carregando...</option>
                             </select>
+
                         </div>
                         
                         <div class="filtro-column">
                             <label for="mes" style="font-size: 13px;">Mês:</label>
                             <select id="mes" name="mes" required>
-                                <option value="">Selecione</option>
+                                <option value="">Carregando...</option>
                             </select>
+
                         </div>
                         
                         <div class="filtro-column">
@@ -83,8 +83,9 @@
                         <div class="filtro-column">
                             <label for="horario" style="font-size: 13px;">Horário:</label>
                             <select id="horario" name="horario" required>
-                                <option value="">Selecione</option>
+                                <option value="">Carregando...</option>
                             </select>
+
                         </div>
                     </div>
                 </div>
@@ -96,15 +97,16 @@
                         <div class="data-column">
                             <label for="data_sorteio">Data:</label>
                             <select id="data_sorteio" name="data_sorteio" required disabled>
-                                <option value="">Selecione a data</option>
+                                <option value="">Carregando...</option>
                             </select>
-                        </div>
+
                         
                         <div class="horario-column">
                             <label for="horario_sorteio">Horário:</label>
-                            <select id="horario_sorteio" name="horario_sorteio" required disabled>
-                                <option value="">Selecione o horário</option>
+                            <select id="horario_sorteio" name="horario_sorteio" >
+                                <option value="">Carregando...</option>
                             </select>
+
                         </div>
                     </div>
                 </div>
@@ -112,10 +114,9 @@
             <!-- Pagamento -->
             <label for="modelo_pagamento">Modelo de pagamento:</label>
             <select name="modelo_pagamento" id="modelo_pagamento">
-                <option value="pix" selected>PIX</option>
-                <option value="cedulas">Cédulas</option>
-                <option value="cartao" class="riscado">Cartão (indisponível)</option>
+                <option value="">Carregando...</option>
             </select>
+
             
             <div id="campo-pix">
                 <label for="chave_pix">Chave PIX:</label>
@@ -124,17 +125,16 @@
             <!-- Tipo de sorteio -->
             <label for="tipo_sorteio">Tipo de sorteio:</label>
             <select name="tipo_sorteio" id="tipo_sorteio">
-                <option value="automatico" selected>Automático (programado)</option>
-                <option value="semi-federal">Semiautomático (Federal)</option>
-                <option value="beta">Beta (API não confiável)</option>
+                <option value="">Carregando...</option>
             </select>
+
             
             <!-- Quantidade de Prêmios -->
             <label for="quantidade_premios">Quantidade de prêmios:</label>
             <select id="quantidade_premios" name="quantidade_premios" required>
-                <option value="1" selected>1º lugar</option>
-                <option value="2">1º e 2º lugar</option>
+                <option value="">Carregando...</option>
             </select>
+
             
             <!-- Nome do 1º Prêmio -->
             <label for="nome_premio_um">Nome do 1º prêmio:</label>
@@ -193,10 +193,9 @@
             <!-- Tipo de dezenas -->
             <label class="quantidade-dezenas" for="tipo_quantidade_dezenas">Quantidade de dezenas:</label>
             <select id="tipo_quantidade_dezenas" name="tipo_quantidade_dezenas">
-                <option value="1000">000 - 999 (1000 números)</option>
-                <option value="100">00 - 99 (100 números)</option>
-                <option value="25">25 Grupos (25 números)</option>
+                <option value="">Carregando...</option>
             </select>
+
 
             <label class="valor-dezena" for="valor_dezena">Valor da dezena (R$):</label>
             <input type="number" step="0.01" id="valor_dezena" name="valor_dezena" required>
@@ -288,34 +287,5 @@
                 </div>
             </div>
         </div>
-
-        <style>
-        /* Estilos do modal de recorte (antes adicionados pelo JS) */
-        .modal-recorte { position: fixed; top:0; left:0; width:100%; height:100%; background: rgba(0,0,0,0.7); display:flex; align-items:center; justify-content:center; z-index:10000; animation: fadeIn 0.3s; }
-        .modal-recorte-content { background: white; padding: 20px; border-radius: 10px; max-width: 800px; width: 90%; max-height: 90vh; overflow-y: auto; }
-        .modal-recorte-header { display:flex; justify-content:space-between; align-items:center; margin-bottom:15px; }
-        .modal-recorte-header h3 { margin:0; }
-        .modal-recorte-fechar { background:none; border:none; font-size:24px; cursor:pointer; color:#666; }
-        .modal-recorte-info { margin-bottom:15px; padding:10px; background:#f5f5f5; border-radius:5px; }
-        .modal-recorte-help { font-size:13px; color:#666; }
-        .modal-recorte-body { display:flex; gap:20px; margin-bottom:20px; }
-        .modal-recorte-canvas { flex:2; max-height:400px; overflow:hidden; background:#f0f0f0; }
-        .modal-recorte-preview { flex:1; min-width:200px; }
-        .preview-recorte { width:150px; height:150px; overflow:hidden; border:2px dashed #ccc; background:#f8f8f8; display:flex; align-items:center; justify-content:center; color:#999; }
-        .modal-recorte-instructions { font-size:12px; color:#666; margin-top:8px; }
-        .modal-recorte-actions { display:flex; justify-content:space-between; margin-top:20px; }
-        .btn-cancelar-recorte { padding:10px 20px; background:#f5f5f5; border:1px solid #ddd; border-radius:5px; cursor:pointer; }
-        .btn-aplicar-recorte { padding:10px 20px; background:#4CAF50; color:white; border:none; border-radius:5px; cursor:pointer; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        .file-item { display:flex; justify-content:space-between; align-items:center; padding:8px; background:#f8f9fa; border-radius:4px; margin-bottom:5px; }
-        .file-item .btn-remover { background:#dc3545; color:white; border:none; width:24px; height:24px; border-radius:50%; cursor:pointer; font-size:16px; display:flex; align-items:center; justify-content:center; }
-        .file-item .btn-remover:hover { background:#c82333; }
-        </style>
-
-
-
-
 </body>
 </html>

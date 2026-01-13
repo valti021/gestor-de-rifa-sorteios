@@ -20,7 +20,7 @@ document.addEventListener("modalCriarRifa:carregado", () => {
             const campoPix = document.getElementById("campo-pix");
             const chavePixInput = document.getElementById("chave_pix");
 
-            if (this.value === "pix") {
+            if (this.value === "Pix") {
                 if (campoPix) campoPix.style.display = "block";
             } else {
                 if (campoPix) campoPix.style.display = "none";
